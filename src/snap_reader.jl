@@ -1,0 +1,109 @@
+using GadgetIO
+
+# snapshot reading functions
+"""
+    get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
+
+Read snapshot data from `data.snap` with `fieldname` and `parttype`.
+"""
+function get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
+    return read_block(data.snap, fieldname, parttype=parttype)
+end
+"""
+    get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
+
+Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap`.
+"""
+function get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
+    if haskey(data.snap_data,(fieldname,parttype))
+        return data.snap_data[(fieldname, parttype)]
+    else
+        return read_block(data.snap, fieldname, parttype=parttype)
+    end
+end
+"""
+    get_snap_data(data::GadgetOnlyData, fieldname::String; parttype::Int64=0)
+
+Get snapshot data from `data.snap_data`.
+"""
+function get_snap_data(data::GadgetOnlyData, fieldname::String; parttype::Int64=0)
+    return data.snap_data[(fieldname, parttype)]
+end
+
+# snapshot reading functions to add the data just read
+"""
+    get_snap_data!(data::GadgetData, fieldname::String; parttype::Int64=0)
+
+See `get_snap_data(data::GadgetData, fieldname::String; parttype::Int64=0)`
+"""
+function get_snap_data!(data::GadgetData, fieldname::String; parttype::Int64=0)
+    return get_snap_data(data, fieldname, parttype=parttype)
+end
+"""
+    get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
+
+Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap` and save in `data.snap_data`.
+"""
+function get_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
+    if haskey(data.snap_data,(fieldname,parttype))
+        return data.snap_data[(fieldname, parttype)]
+    else
+        new_snap_data = read_block(data.snap, fieldname, parttype=parttype)
+        data.snap_data[(fieldname,parttype)] = new_snap_data
+        return new_snap_data
+    end
+end
+
+# snapshot header reading functions
+"""
+    get_snap_header(data::GadgetFilename)
+
+Read snapshot header from `data.snap` with `fieldname` and `parttype`.
+"""
+function get_snap_header(data::GadgetFilename)
+    return read_header(data.snap)
+end
+"""
+    get_snap_header(data::GadgetFilenameWithData)
+
+Get snapshot header from `data.snap_data` if present, otherwise read from `data.snap`.
+"""
+function get_snap_header(data::GadgetFilenameWithData)
+    if haskey(data.snap_data,"HEAD")
+        return data.snap_data["HEAD"]
+    else
+        return read_header(data.snap)
+    end
+end
+"""
+    get_snap_header(data::GadgetOnlyData)
+
+Get snapshot header from `data.snap_data`.
+"""
+function get_snap_header(data::GadgetOnlyData)
+    return data.snap_data["HEAD"]
+end
+
+# snapshot reading functions to add the header just read
+"""
+    get_snap_header!(data::GadgetData)
+
+See `get_snap_header(data::GadgetData)`
+"""
+function get_snap_header!(data::GadgetData)
+    return get_snap_header(data)
+end
+"""
+    get_snap_header(data::GadgetFilenameWithData)
+
+Get snapshot header from `data.snap_data` if present, otherwise read from `data.snap` and save in `data.snap_data`.
+"""
+function get_snap_header!(data::GadgetFilenameWithData)
+    if haskey(data.snap_data,"HEAD")
+        return data.snap_data["HEAD"]
+    else
+        new_snap_data = read_header(data.snap)
+        data.snap_data["HEAD"] = new_snap_data
+        return new_snap_data
+    end
+end
