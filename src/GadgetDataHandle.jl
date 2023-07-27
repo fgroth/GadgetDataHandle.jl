@@ -1,0 +1,5 @@
+module GadgetDataHandle
+
+
+
+end # module
