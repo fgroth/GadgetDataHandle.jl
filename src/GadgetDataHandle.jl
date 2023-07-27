@@ -11,4 +11,7 @@ export get_snap_data, get_snap_data!,
 include("sub_reader.jl")
 export get_sub_data, get_sub_data!
 
+include("remove_data.jl")
+export remove_snap_data!, remove_sub_data!
+
 end # module
