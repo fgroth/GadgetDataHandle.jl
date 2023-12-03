@@ -6,6 +6,7 @@ export GadgetData, GadgetFilename,
 
 include("snap_reader.jl")
 export get_snap_data, get_snap_data!,
+    get_snap_data_in_box,get_snap_data_in_box!,
     get_snap_header, get_snap_header!
 
 include("sub_reader.jl")
