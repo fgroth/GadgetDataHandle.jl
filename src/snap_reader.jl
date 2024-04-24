@@ -7,7 +7,12 @@ using GadgetIO
 Read snapshot data from `data.snap` with `fieldname` and `parttype`.
 """
 function get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
-    return read_block(data.snap, fieldname, parttype=parttype)
+    if fieldname == "VELC"
+        atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
+        return read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
+    else
+        return read_block(data.snap, fieldname, parttype=parttype)
+    end
 end
 """
     get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
@@ -18,7 +23,12 @@ function get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype
     if haskey(data.snap_data,(fieldname,parttype))
         return data.snap_data[(fieldname, parttype)]
     else
-        return read_block(data.snap, fieldname, parttype=parttype)
+        if fieldname == "VELC"
+            atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
+            return read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
+        else
+            return read_block(data.snap, fieldname, parttype=parttype)
+        end
     end
 end
 """
@@ -48,7 +58,12 @@ function get_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttyp
     if haskey(data.snap_data,(fieldname,parttype))
         return data.snap_data[(fieldname, parttype)]
     else
-        new_snap_data = read_block(data.snap, fieldname, parttype=parttype)
+        new_snap_data = if fieldname == "VELC"
+            atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
+            read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
+        else
+            read_block(data.snap, fieldname, parttype=parttype)
+        end
         data.snap_data[(fieldname,parttype)] = new_snap_data
         return new_snap_data
     end
