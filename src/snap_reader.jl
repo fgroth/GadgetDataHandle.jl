@@ -85,7 +85,7 @@ Get snapshot data from `data.snap_data` if present, otherwise read from `data.sn
 """
 function get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
     if haskey(data.snap_data,(fieldname,parttype))
-        pos = get_snap_data(data,"POS",parttype=0)
+        pos = get_snap_data(data,"POS",parttype=parttype)
         index = (corner_lowerleft[1] .< pos[1,:] .< corner_upperright[1]) .&
             (corner_lowerleft[2] .< pos[2,:] .< corner_upperright[2]) .&
             (corner_lowerleft[3] .< pos[3,:] .< corner_upperright[3])
@@ -104,7 +104,7 @@ end
 Get snapshot data from `data.snap_data`.
 """
 function get_snap_data_in_box(data::GadgetOnlyData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
-    pos = get_snap_data(data,"POS",parttype=0)
+    pos = get_snap_data(data,"POS",parttype=parttype)
     index = (corner_lowerleft[1] .< pos[1,:] .< corner_upperright[1]) .&
         (corner_lowerleft[2] .< pos[2,:] .< corner_upperright[2]) .&
         (corner_lowerleft[3] .< pos[3,:] .< corner_upperright[3])
