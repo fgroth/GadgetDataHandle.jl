@@ -1,5 +1,22 @@
 using GadgetIO
 
+"""
+    read_block_with_corrections(snap::String, fieldname::String; parttype::Int64)
+
+Read block, but include some customized corrections such as for the velocity if blocks start with `"VEL"`, `"VRMS"`, `"VBLK"`, `"VTAN"`, `"VRAD"` and end with `"C"`.
+Also compare `read_block` from `GadgetIO`.
+"""
+function read_block_with_corrections(snap::String, fieldname::String; parttype::Int64)
+    if length(fieldname) > 3
+        if (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == "C"
+            atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
+            return read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
+        end
+    end
+    # default return option
+    read_block(snap, fieldname, parttype=parttype)
+end
+
 # snapshot reading functions
 """
     get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
@@ -7,12 +24,7 @@ using GadgetIO
 Read snapshot data from `data.snap` with `fieldname` and `parttype`.
 """
 function get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
-    if fieldname == "VELC"
-        atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
-        return read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
-    else
-        return read_block(data.snap, fieldname, parttype=parttype)
-    end
+    return read_block_with_corrections(data.snap, fieldname, parttype=parttype)
 end
 """
     get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
@@ -23,12 +35,7 @@ function get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype
     if haskey(data.snap_data,(fieldname,parttype))
         return data.snap_data[(fieldname, parttype)]
     else
-        if fieldname == "VELC"
-            atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
-            return read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
-        else
-            return read_block(data.snap, fieldname, parttype=parttype)
-        end
+        return read_block_with_corrections(data.snap, fieldname, parttype=parttype)
     end
 end
 """
@@ -58,12 +65,7 @@ function get_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttyp
     if haskey(data.snap_data,(fieldname,parttype))
         return data.snap_data[(fieldname, parttype)]
     else
-        new_snap_data = if fieldname == "VELC"
-            atime = 1/(1+read_header(data.snap).z) # save for non-comoving simulations
-            read_block(data.snap, "VEL", parttype=parttype) .* (atime^(3/2))
-        else
-            read_block(data.snap, fieldname, parttype=parttype)
-        end
+        new_snap_data = read_block_with_corrections(data.snap, fieldname, parttype=parttype)
         data.snap_data[(fieldname,parttype)] = new_snap_data
         return new_snap_data
     end
