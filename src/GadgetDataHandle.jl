@@ -17,8 +17,13 @@ export remove_snap_data!, remove_sub_data!
 
 include("gadget_general.jl")
 
+include("simulation_data_structure.jl")
+export GadgetSimulation,
+    GadgetSimulationDir,
+    GadgetSimulationDirWithData
 include("simulation.jl")
 export get_last_snapshot, get_last_snapnumber,
     get_snapshot
+
 
 end # module

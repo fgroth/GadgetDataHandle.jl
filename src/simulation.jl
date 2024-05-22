@@ -120,11 +120,11 @@ function get_previous_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
 end
 
 """
-    get_next_snapshot(i_snap::In64, simulation::GadgetSimulationDir)
+    get_next_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
 
 Get name of next snapshot after current number.
 """
-function get_next_snapshot(i_snap::In64, simulation::GadgetSimulationDir)
+function get_next_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
     for next_snap in i_snap+1:0
         if "snap_"*sprintf1("%03d",next_snap) in all_snaps
             "snap_"*sprintf1("%03d",next_snap)
