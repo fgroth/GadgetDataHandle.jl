@@ -25,5 +25,7 @@ include("simulation.jl")
 export get_last_snapshot, get_last_snapnumber,
     get_snapshot
 
+include("units.jl")
+export GadgetUnits
 
 end # module
