@@ -28,4 +28,7 @@ export get_last_snapshot, get_last_snapnumber,
 include("units.jl")
 export GadgetUnits
 
+include("diagnostic_files/read_sfr.jl")
+export read_sfr_txt
+
 end # module
