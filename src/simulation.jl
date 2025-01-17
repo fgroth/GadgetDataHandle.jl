@@ -13,7 +13,7 @@ function get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=
     else
         ""
     end
-    return dir*last_snap
+    return joinpath(dir,last_snap)
 end
 
 """
@@ -43,9 +43,9 @@ function get_snapshot(simulation_dir::String="./"; include_directory::Bool=false
     end
     for this_i_snap in i_snap:-1:first_snap_to_consider
         if "snap_"*sprintf1("%03d",this_i_snap) in all_files
-            return dir*"snap_"*sprintf1("%03d",this_i_snap)
+            return joinpath(dir, "snap_"*sprintf1("%03d",this_i_snap))
         elseif "snapdir_"*sprintf1("%03d",this_i_snap) in all_files
-            return dir*"snapdir_"*sprintf1("%03d",this_i_snap)*"/snap_"*sprintf1("%03d",this_i_snap)
+            return joinpath(dir, "snapdir_"*sprintf1("%03d",this_i_snap), "snap_"*sprintf1("%03d",this_i_snap))
         end
     end
 end
@@ -79,7 +79,7 @@ function get_all_snapshots(simulation::GadgetSimulationDir)
     # now add the file instead of the directory if snaps are inside directorires
     for i_snap in 1:length(snaps)
         if startswith(snaps[i_snap],"snapdir_")
-            snaps[i_snap] = snaps[i_snap]*"/snap_"*snaps[i_snap][end-3:end]
+            snaps[i_snap] = joinpath(snaps[i_snap], "snap_"*snaps[i_snap][end-3:end])
         end
     end
     return snaps
@@ -96,7 +96,7 @@ function get_all_subs(simulation::GadgetSimulationDir)
     # now add the file instead of the directory if subs are inside directorires
     for i_sub in 1:length(sub)
         if startswith(subs[i_sub],"groups_")
-            subs[i_sub] = subs[i_sub]*"/sub_"*snaps[i_sub][end-3:end]
+            subs[i_sub] = joinpath(subs[i_sub], "sub_"*snaps[i_sub][end-3:end])
         end
     end
     return subs
@@ -112,8 +112,8 @@ function get_previous_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
     for previous_snap in i_snap-1:-1:0
         if "snap_"*sprintf1("%03d",previous_snap) in all_snaps
             "snap_"*sprintf1("%03d",previous_snap)
-        elseif "snapdir_"*sprintf1("%03d",previous_snap)*"/snap_"*sprintf1("%03d",previous_snap) in all_snaps
-            "snapdir_"*sprintf1("%03d",previous_snap)*"/snap_"*sprintf1("%03d",previous_snap)
+        elseif joinpath("snapdir_"*sprintf1("%03d",previous_snap), "snap_"*sprintf1("%03d",previous_snap)) in all_snaps
+            joinpath("snapdir_"*sprintf1("%03d",previous_snap), "snap_"*sprintf1("%03d",previous_snap))
         end
     end
     # if we reach this point, there is no further snapshot in simulation
@@ -128,8 +128,8 @@ function get_next_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
     for next_snap in i_snap+1:0
         if "snap_"*sprintf1("%03d",next_snap) in all_snaps
             "snap_"*sprintf1("%03d",next_snap)
-        elseif "snapdir_"*sprintf1("%03d",next_snap)*"/snap_"*sprintf1("%03d",next_snap) in all_snaps
-            "snapdir_"*sprintf1("%03d",next_snap)*"/snap_"*sprintf1("%03d",next_snap)
+        elseif joinpath("snapdir_"*sprintf1("%03d",next_snap), "snap_"*sprintf1("%03d",next_snap)) in all_snaps
+            joinpath("snapdir_"*sprintf1("%03d",next_snap), "snap_"*sprintf1("%03d",next_snap))
         end
 
     end
