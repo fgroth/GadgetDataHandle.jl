@@ -79,7 +79,7 @@ function read_block_with_corrections(snap::String, fieldname::String; parttype::
         read_block(snap, fieldname, parttype=parttype, h=h)
     end
     # return only selected data
-    selection = evaluate_selection_function_if_necessary(data, parttype=parttype, reading_function=read_block)
+    selection = evaluate_selection_function_if_necessary(GadgetFilename(snap), parttype=parttype, reading_function=read_block)
     return restrict_to_selection(block_data, selection)
 end
 """
@@ -97,7 +97,7 @@ function read_particles_in_box_with_corrections(snap::String, fieldname::String,
         read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
     end
     # return only selected data
-    selection = evaluate_selection_function_if_necessary(data, parttype=parttype,
+    selection = evaluate_selection_function_if_necessary(GadgetFilename(snap), parttype=parttype,
                                                          reading_function=(snap,fieldname; parttype=parttype)->read_particles_in_box(snap,fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys))
     return restrict_to_selection(block_data, selection)
 end
