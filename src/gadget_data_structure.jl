@@ -33,9 +33,10 @@ function get_select_particle_types(select_particle_types::Union{Nothing,BitVecto
         select_particle_types = BitVector(undef,6)
         select_particle_types .= false
     else
-        if length(select_particle_types != 6)
+        if length(select_particle_types) != 6
             error("Length of select_particle_type must be 6.")
         end
+        select_particle_types
     end
 end
 
