@@ -1,5 +1,62 @@
 using GadgetIO
 
+# allow to use selection function
+"""
+    evaluate_selection_function_if_necessary(data;
+                                             parttype=0, reading_function::Function=read_block)
+
+Check if selection function has been evaluated already and otherwise evaluate it now.
+"""
+function evaluate_selection_function_if_necessary(data::GadgetData;
+                                                  parttype=0, reading_function::Function=read_block)
+    if haskey(data.snap_data,("SELECTION",parttype)) && (parttype in data.select_particle_types)
+        # the selection functionhas been calculated already
+        return data.snap_data[("SELECTION",parttype)]
+    else
+        if parttype in data.select_particle_types
+            # we have to evaluate the selection function
+            data.snap_data[("SELECTION",parttype)] = data.selection_function(data, reading_function=reading_function)
+            return data.snap_data[("SELECTION",parttype)]
+        else
+            # all particles should be included
+            data.snap_data[("SELECTION",parttype)] = :;
+            return data.snap_data[("SELECTION",parttype)]
+        end
+    end
+end
+function evaluate_selection_function_if_necessary(data::GadgetFilename;
+                                                  parttype=0, reading_function::Function=read_block)
+    # function specialization, as GadgetFilename does not contain snap_data.
+    if haskey(data.snap_selection,parttype) && (parttype in data.select_particle_types)
+        # the selection functionhas been calculated already
+        return data.snap_selection[parttype]
+    else
+        if parttype in data.select_particle_types
+            # we have to evaluate the selection function
+            data.snap_selection[parttype] = data.selection_function(data, reading_function=reading_function)
+            return data.snap_selection[parttype]
+        else
+            # all particles should be included
+            data.snap_data[parttype] = :;
+            return data.snap_selection[parttype]
+        end
+    end
+end
+
+"""
+    restrict_to_selection(block_data::Array, selection)
+
+Select a subset of block_data, taking care if dimensionality.
+"""
+function restrict_to_selection(block_data::Array, selection)
+    if ndims(block_data) == 1
+        return block_data[selection]
+    else
+        return block_data[:, selection]
+    end
+end
+
+
 """
     read_block_with_corrections(snap::String, fieldname::String; parttype::Int64,
                                 h::Union{Nothing,SnapshotHeader}=nothing)
@@ -9,19 +66,21 @@ Also compare `read_block` from `GadgetIO`.
 """
 function read_block_with_corrections(snap::String, fieldname::String; parttype::Int64,
                                      h::Union{Nothing,SnapshotHeader}=nothing)
-    if length(fieldname) > 3
-        if (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
-            z = if typeof(h) == Nothing
-                read_header(snap).z
-            else
-                h.z
-            end
-            atime = 1/(1+z) # save for non-comoving simulations
-            return read_block(snap, fieldname[1:end-1], parttype=parttype, h=h) .* (atime^(3/2))
+    block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
+        z = if typeof(h) == Nothing
+            read_header(snap).z
+        else
+            h.z
         end
+        atime = 1/(1+z) # save for non-comoving simulations
+        read_block(snap, fieldname[1:end-1], parttype=parttype, h=h) .* (atime^(3/2))
+    else
+        # default return option
+        read_block(snap, fieldname, parttype=parttype, h=h)
     end
-    # default return option
-    read_block(snap, fieldname, parttype=parttype, h=h)
+    # return only selected data
+    selection = evaluate_selection_function_if_necessary(data, parttype=parttype, reading_function=read_block)
+    return restrict_to_selection(block_data, selection)
 end
 """
     read_particles_in_box_with_corrections(snap::String, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
@@ -30,14 +89,17 @@ Read particles in box, but include some customized corrections such as for the v
 Also compare `read_particles_in_box` from `GadgetIO`.
 """
 function read_particles_in_box_with_corrections(snap::String, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
-    if length(fieldname) > 3
-        if (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
-            atime = 1/(1+read_header(snap).z) # save for non-comoving simulations
-            return read_particles_in_box(snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
-        end
+    block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
+        atime = 1/(1+read_header(snap).z) # save for non-comoving simulations
+        return read_particles_in_box(snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
+    else
+        # default return option
+        read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
     end
-    # default return option
-    read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
+    # return only selected data
+    selection = evaluate_selection_function_if_necessary(data, parttype=parttype,
+                                                         reading_function=(snap,fieldname; parttype=parttype)->read_particles_in_box(snap,fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys))
+    return restrict_to_selection(block_data, selection)
 end
 
 # snapshot reading functions

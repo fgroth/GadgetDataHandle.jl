@@ -8,12 +8,14 @@ Datatype to hold Gadget `snap` and `sub` filenames.
 struct GadgetFilename <: GadgetData
     snap::String
     sub::String
+    snap_selection::Dict{Int64,Any}
     selection_function::Function
     select_particle_types::BitVector
     
     function GadgetFilename(snap::String, sub::String;
                             selection_function::Function=(i->true), select_particle_types::Union{Nothing,BitVector}=nothing)
         new(snap,sub,
+            Dict{Int64,Any}(),
             selection_function,get_select_particle_types(select_particle_types))
     end
     function GadgetFilename(snap::String; kwargs...)
