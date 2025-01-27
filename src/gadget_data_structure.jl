@@ -1,5 +1,11 @@
 abstract type GadgetData end
 
+"""
+    default_selection_function(data::GadgetData;
+                               parttype::Int64=0, reading_function::Function=read_block)
+
+Select all particles.
+"""
 function default_selection_function(data::GadgetData;
                                     parttype::Int64=0, reading_function::Function=read_block)
     return BitVector(repeat([true], get_snap_header(data).nall[parttype+1]))

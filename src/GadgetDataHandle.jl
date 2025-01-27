@@ -2,7 +2,8 @@ module GadgetDataHandle
 
 include("gadget_data_structure.jl")
 export GadgetData, GadgetFilename,
-    GadgetFilenameWithData, GadgetOnlyData
+    GadgetFilenameWithData, GadgetOnlyData,
+    default_selection_function
 
 include("snap_reader.jl")
 export get_snap_data, get_snap_data!,
