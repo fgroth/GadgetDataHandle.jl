@@ -37,7 +37,7 @@ function evaluate_selection_function_if_necessary(data::GadgetFilename;
             return data.snap_selection[parttype]
         else
             # all particles should be included
-            data.snap_data[parttype] = :;
+            data.snap_selection[parttype] = :;
             return data.snap_selection[parttype]
         end
     end
