@@ -2,7 +2,7 @@ abstract type GadgetData end
 
 function default_selection_function(data::GadgetData;
                                     parttype::Int64=0, reading_function::Function=read_block)
-    return BitVector(repeat([true], get_snap_header(data).npart[parttype+1]))
+    return BitVector(repeat([true], get_snap_header(data).nall[parttype+1]))
 end
 
 """
