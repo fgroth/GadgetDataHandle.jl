@@ -1,5 +1,10 @@
 abstract type GadgetData end
 
+function default_selection_function(i::Int64;
+                                    parttype::Int64=0, reading_function::Function=read_block)
+    return true
+end
+
 """
     GadgetFilename <: GadgetData
 
@@ -13,7 +18,7 @@ struct GadgetFilename <: GadgetData
     select_particle_types::BitVector
     
     function GadgetFilename(snap::String, sub::String;
-                            selection_function::Function=(i->true), select_particle_types::Union{Nothing,BitVector}=nothing)
+                            selection_function::Function=default_selection_function, select_particle_types::Union{Nothing,BitVector}=nothing)
         new(snap,sub,
             Dict{Int64,Any}(),
             selection_function,get_select_particle_types(select_particle_types))
@@ -58,7 +63,7 @@ mutable struct GadgetFilenameWithData <: GadgetData
     Construct a `GadgetFilenameWithData` with un-initialzed `snap_data` and `sub_data`.
     """
     function GadgetFilenameWithData(snap::String,sub::String;
-                                    selection_function::Function=(i->true), select_particle_types::Union{Nothing,BitVector}=nothing)
+                                    selection_function::Function=default_selection_function, select_particle_types::Union{Nothing,BitVector}=nothing)
         new(snap,sub,
             Dict(),Dict(),
             selection_function, get_select_particle_types(select_particle_types))
@@ -89,7 +94,7 @@ mutable struct GadgetOnlyData <: GadgetData
 
     Construct `GadgetOnlyData` with  with un-initialzed `snap_data` and `sub_data`.
     """
-    function GadgetOnlyData(; selection_function::Function=(i->true), select_particle_types::Union{Nothing,BitVector}=nothing)
+    function GadgetOnlyData(; selection_function::Function=default_selection_function, select_particle_types::Union{Nothing,BitVector}=nothing)
         new(Dict(), Dict(),
             selection_function, get_select_particle_types(select_particle_types))
     end
