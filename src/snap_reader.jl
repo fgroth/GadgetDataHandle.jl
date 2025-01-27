@@ -83,12 +83,13 @@ function read_block_with_corrections(data::GadgetData, fieldname::String; partty
     return restrict_to_selection(block_data, selection)
 end
 """
-    read_particles_in_box_with_corrections(snap::String, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
+    read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
 
 Read particles in box, but include some customized corrections such as for the velocity if blocks start with `"VEL"`, `"VRMS"`, `"VBLK"`, `"VTAN"`, `"VRAD"` and end with `"C"`.
 Also compare `read_particles_in_box` from `GadgetIO`.
 """
-function read_particles_in_box_with_corrections(snap::String, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
+function read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright;
+                                                parttype::Int64, use_keys::Bool=false)
     block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
         atime = 1/(1+read_header(snap).z) # save for non-comoving simulations
         return read_particles_in_box(snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
@@ -97,7 +98,7 @@ function read_particles_in_box_with_corrections(snap::String, fieldname::String,
         read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
     end
     # return only selected data
-    selection = evaluate_selection_function_if_necessary(GadgetFilename(snap), parttype=parttype,
+    selection = evaluate_selection_function_if_necessary(data, parttype=parttype,
                                                          reading_function=(snap,fieldname; parttype=parttype)->read_particles_in_box(snap,fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys))
     return restrict_to_selection(block_data, selection)
 end
