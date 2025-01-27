@@ -2,7 +2,7 @@ using GadgetIO
 
 # allow to use selection function
 """
-    evaluate_selection_function_if_necessary(data;
+    evaluate_selection_function_if_necessary(data::GadgetData;
                                              parttype::Int64=0, reading_function::Function=read_block)
 
 Check if selection function has been evaluated already and otherwise evaluate it now.

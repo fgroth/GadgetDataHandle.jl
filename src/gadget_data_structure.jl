@@ -1,8 +1,8 @@
 abstract type GadgetData end
 
-function default_selection_function(i::Int64;
+function default_selection_function(data::GadgetData;
                                     parttype::Int64=0, reading_function::Function=read_block)
-    return true
+    return BitVector(repeat([true], get_snap_header(data).npart[parttype+1]))
 end
 
 """
