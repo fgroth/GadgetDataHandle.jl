@@ -9,7 +9,7 @@ Check if selection function has been evaluated already and otherwise evaluate it
 """
 function evaluate_selection_function_if_necessary(data::GadgetData;
                                                   parttype::Int64=0, reading_function::Function=read_block)
-    if has_snap_block(data,"SELECTION",parttype=parttype) && (parttype in data.select_particle_types)
+    if has_snap_data(data,"SELECTION",parttype=parttype) && (parttype in data.select_particle_types)
         # the selection functionhas been calculated already
         return data.snap_data[("SELECTION",parttype)]
     else
@@ -117,7 +117,7 @@ end
 Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap`.
 """
 function get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
-    if has_snap_block(data,fieldname,parttype=parttype)
+    if has_snap_data(data,fieldname,parttype=parttype)
         return data.snap_data[(fieldname, parttype)]
     else
         return read_block_with_corrections(data.snap, fieldname, parttype=parttype, h=get_snap_header(data))
@@ -147,7 +147,7 @@ end
 Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap` and save in `data.snap_data`.
 """
 function get_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
-    if has_snap_block(data,fieldname,parttype=parttype)
+    if has_snap_data(data,fieldname,parttype=parttype)
         return data.snap_data[(fieldname, parttype)]
     else
         new_snap_data = read_block_with_corrections(data.snap, fieldname, parttype=parttype, h=get_snap_header!(data))
@@ -171,7 +171,7 @@ end
 Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap`.
 """
 function get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
-    if has_snap_block(data,fieldname,parttype=parttype)
+    if has_snap_data(data,fieldname,parttype=parttype)
         pos = get_snap_data(data,"POS",parttype=parttype)
         index = (corner_lowerleft[1] .< pos[1,:] .< corner_upperright[1]) .&
             (corner_lowerleft[2] .< pos[2,:] .< corner_upperright[2]) .&
@@ -217,7 +217,7 @@ end
 Get snapshot data from `data.snap_data` if present, otherwise read from `data.snap` and save in `data.snap_data`.
 """
 function get_snap_data_in_box!(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
-    if has_snap_block(data,fieldname,parttype=parttype)
+    if has_snap_data(data,fieldname,parttype=parttype)
         return get_snap_data_in_box(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype)
     else
         new_snap_data = read_particles_in_box_with_corrections(data.snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)

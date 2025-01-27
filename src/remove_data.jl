@@ -1,4 +1,21 @@
 
+"""
+    has_snap_data(data::GadgetData, fieldname::String;
+                  parttype::Int64=0)
+
+Return if `fieldname` for given `parttype` is already part of `data.snap_data`.
+"""
+function has_snap_data(data::GadgetData, fieldname::String;
+                       parttype::Int64=0)
+    return haskey(data.snap_data,(fieldname,parttype))
+end
+function has_snap_data(data::GadgetFilename, fieldname::String;
+                       parttype::Int64=0)
+    # GadgetFilename type does not contain snap_data.
+    return false
+end
+
+
 # functions to remove data and free memory
 """
     remove_snap_data!(data::GadgetFilename, fieldname::String; parttype::Int64=0)
@@ -10,30 +27,34 @@ function remove_snap_data!(data::GadgetFilename, fieldname::String; parttype::In
 end
 
 """
-    remove_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
+    remove_snap_data!(data::GadgetData, fieldname::String; parttype::Int64=0)
 
 Remove data from `snap_data` structure. Return `true`, if it was removed and present before, otherwise `false`.
 """
-function remove_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
-    if pop!(data.snap_data,(fieldname,parttype),nothing) == nothing
-        return false
-    else
+function remove_snap_data!(data::GadgetData, fieldname::String; parttype::Int64=0)
+    if has_snap_data(data, fieldname, parttype=parttype)
+        delete!(data.snap_data, (fieldname,parttype))
         return true
+    else
+        return false
     end
 end
 
-"""
-    remove_snap_data!(data::GadgetOnlyData, fieldname::String; parttype::Int64=0)
+# same for subfind blocks
 
-Remove data from `snap_data` structure. Return `true`, if it was removed and present before, otherwise `false`.
 """
-function remove_snap_data!(data::GadgetOnlyData, fieldname::String; parttype::Int64=0)
-    if pop!(data.snap_data,(fieldname,parttype),nothing) == nothing
-        return false
-    else
-        return true
-    end
+    has_sub_data(data::GadgetData, fieldname::String)
+
+Return if `fieldname` is already part of `data.sub_data`.
+"""
+function has_sub_data(data::GadgetData, fieldname::String)
+    return haskey(data.sub_data, fieldname)
 end
+function has_sub_data(data::GadgetFilename, fieldname::String)
+    # GadgetFilename type does not contain sub_data.
+    return false
+end
+
 
 """
     remove_sub_data!(data::GadgetFilename, fieldname::String)
@@ -49,23 +70,11 @@ end
 
 Remove data from `sub_data` structure. Return `true`, if it was removed and present before, otherwise `false`.
 """
-function remove_sub_data!(data::GadgetFilenameWithData, fieldname::String)
-    if pop!(data.sub_data,fieldname,nothing) == nothing
-        return false
-    else
+function remove_sub_data!(data::GadgetData, fieldname::String)
+    if has_sub_data(data, fieldname)
+        delete!(data.sub_data, fieldname)
         return true
-    end
-end
-
-"""
-    remove_sub_data!(data::GadgetOnlyData, fieldname::String)
-
-Remove data from `sub_data` structure. Return `true`, if it was removed and present before, otherwise `false`.
-"""
-function remove_sub_data!(data::GadgetOnlyData, fieldname::String)
-    if pop!(data.sub_data,fieldname,nothing) == nothing
-        return false
     else
-        return true
+        return false
     end
 end
