@@ -13,7 +13,7 @@ function evaluate_selection_function_if_necessary(data::GadgetData;
         # the selection functionhas been calculated already
         return data.snap_data[("SELECTION",parttype)]
     else
-        if parttype in data.select_particle_types
+        if data.select_particle_types[parttype+1] == 1
             # we have to evaluate the selection function
             data.snap_data[("SELECTION",parttype)] = data.selection_function(data, reading_function=reading_function)
             return data.snap_data[("SELECTION",parttype)]
@@ -31,7 +31,7 @@ function evaluate_selection_function_if_necessary(data::GadgetFilename;
         # the selection functionhas been calculated already
         return data.snap_selection[parttype]
     else
-        if parttype in data.select_particle_types
+        if data.select_particle_types[parttype+1] == 1
             # we have to evaluate the selection function
             data.snap_selection[parttype] = data.selection_function(data, reading_function=reading_function)
             return data.snap_selection[parttype]
