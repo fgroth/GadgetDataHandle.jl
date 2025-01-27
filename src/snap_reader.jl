@@ -58,28 +58,28 @@ end
 
 
 """
-    read_block_with_corrections(snap::String, fieldname::String; parttype::Int64,
+    read_block_with_corrections(data::GadgetData, fieldname::String; parttype::Int64,
                                 h::Union{Nothing,SnapshotHeader}=nothing)
 
 Read block, but include some customized corrections such as for the velocity if blocks start with `"VEL"`, `"VRMS"`, `"VBLK"`, `"VTAN"`, `"VRAD"` and end with `"C"`.
 Also compare `read_block` from `GadgetIO`.
 """
-function read_block_with_corrections(snap::String, fieldname::String; parttype::Int64,
+function read_block_with_corrections(data::GadgetData, fieldname::String; parttype::Int64,
                                      h::Union{Nothing,SnapshotHeader}=nothing)
     block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
         z = if typeof(h) == Nothing
-            read_header(snap).z
+            read_header(data.snap).z
         else
             h.z
         end
         atime = 1/(1+z) # save for non-comoving simulations
-        read_block(snap, fieldname[1:end-1], parttype=parttype, h=h) .* (atime^(3/2))
+        read_block(data.snap, fieldname[1:end-1], parttype=parttype, h=h) .* (atime^(3/2))
     else
         # default return option
-        read_block(snap, fieldname, parttype=parttype, h=h)
+        read_block(data.snap, fieldname, parttype=parttype, h=h)
     end
     # return only selected data
-    selection = evaluate_selection_function_if_necessary(GadgetFilename(snap), parttype=parttype, reading_function=read_block)
+    selection = evaluate_selection_function_if_necessary(data, parttype=parttype, reading_function=read_block)
     return restrict_to_selection(block_data, selection)
 end
 """
@@ -109,7 +109,7 @@ end
 Read snapshot data from `data.snap` with `fieldname` and `parttype`.
 """
 function get_snap_data(data::GadgetFilename, fieldname::String; parttype::Int64=0)
-    return read_block_with_corrections(data.snap, fieldname, parttype=parttype)
+    return read_block_with_corrections(data, fieldname, parttype=parttype)
 end
 """
     get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype::Int64=0)
@@ -120,7 +120,7 @@ function get_snap_data(data::GadgetFilenameWithData, fieldname::String; parttype
     if has_snap_data(data,fieldname,parttype=parttype)
         return data.snap_data[(fieldname, parttype)]
     else
-        return read_block_with_corrections(data.snap, fieldname, parttype=parttype, h=get_snap_header(data))
+        return read_block_with_corrections(data, fieldname, parttype=parttype, h=get_snap_header(data))
     end
 end
 """
@@ -150,7 +150,7 @@ function get_snap_data!(data::GadgetFilenameWithData, fieldname::String; parttyp
     if has_snap_data(data,fieldname,parttype=parttype)
         return data.snap_data[(fieldname, parttype)]
     else
-        new_snap_data = read_block_with_corrections(data.snap, fieldname, parttype=parttype, h=get_snap_header!(data))
+        new_snap_data = read_block_with_corrections(data, fieldname, parttype=parttype, h=get_snap_header!(data))
         data.snap_data[(fieldname,parttype)] = new_snap_data
         return new_snap_data
     end
