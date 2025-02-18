@@ -91,8 +91,8 @@ Also compare `read_particles_in_box` from `GadgetIO`.
 function read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright;
                                                 parttype::Int64, use_keys::Bool=false)
     block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
-        atime = 1/(1+read_header(snap).z) # save for non-comoving simulations
-        return read_particles_in_box(snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
+        atime = 1/(1+get_snap_header(data).z) # save for non-comoving simulations
+        return read_particles_in_box(data.snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
     else
         # default return option
         read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
