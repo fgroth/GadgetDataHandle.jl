@@ -164,7 +164,7 @@ end
 Read snapshot data from `data.snap` with `fieldname` and `parttype`.
 """
 function get_snap_data_in_box(data::GadgetFilename, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
-    return read_particles_in_box_with_corrections(data.snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+    return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
 end
 """
     get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
@@ -183,7 +183,7 @@ function get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, c
             return data.snap_data[(fieldname, parttype)][:,index]
         end
     else
-        return read_particles_in_box_with_corrections(data.snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+        return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
     end
 end
 """
@@ -221,7 +221,7 @@ function get_snap_data_in_box!(data::GadgetFilenameWithData, fieldname::String, 
     if has_snap_data(data,fieldname,parttype=parttype)
         return get_snap_data_in_box(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype)
     else
-        new_snap_data = read_particles_in_box_with_corrections(data.snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+        new_snap_data = read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
         data.snap_data[(fieldname,parttype)] = new_snap_data
         return new_snap_data
     end
