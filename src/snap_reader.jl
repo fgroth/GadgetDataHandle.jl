@@ -95,7 +95,7 @@ function read_particles_in_box_with_corrections(data::GadgetData, fieldname::Str
         return read_particles_in_box(data.snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
     else
         # default return option
-        read_particles_in_box(snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
+        read_particles_in_box(data.snap, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys)
     end
     # return only selected data
     selection = evaluate_selection_function_if_necessary(data, parttype=parttype,
