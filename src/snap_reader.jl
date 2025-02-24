@@ -173,15 +173,16 @@ Get snapshot data from `data.snap_data` if present, otherwise read from `data.sn
 """
 function get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
     if has_snap_data(data,fieldname,parttype=parttype)
-        pos = get_snap_data(data,"POS",parttype=parttype)
-        index = (corner_lowerleft[1] .< pos[1,:] .< corner_upperright[1]) .&
-            (corner_lowerleft[2] .< pos[2,:] .< corner_upperright[2]) .&
-            (corner_lowerleft[3] .< pos[3,:] .< corner_upperright[3])
-        if ndims(data.snap_data[(fieldname, parttype)]) == 1
-            return data.snap_data[(fieldname, parttype)][index]
-        else # == 2
-            return data.snap_data[(fieldname, parttype)][:,index]
-        end
+        # pos = get_snap_data(data,"POS",parttype=parttype)
+        # index = (corner_lowerleft[1] .< pos[1,:] .< corner_upperright[1]) .&
+        #     (corner_lowerleft[2] .< pos[2,:] .< corner_upperright[2]) .&
+        #     (corner_lowerleft[3] .< pos[3,:] .< corner_upperright[3])
+        # if ndims(data.snap_data[(fieldname, parttype)]) == 1
+        #     return data.snap_data[(fieldname, parttype)][index]
+        # else # == 2
+        #     return data.snap_data[(fieldname, parttype)][:,index]
+        # end
+        return data.snap_data[(fieldname, parttype)
     else
         return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
     end
