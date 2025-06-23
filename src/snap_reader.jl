@@ -10,7 +10,7 @@ Check if selection function has been evaluated already and otherwise evaluate it
 function evaluate_selection_function_if_necessary(data::GadgetData;
                                                   parttype::Int64=0, reading_function::Function=read_block)
     if has_snap_data(data,"SELECTION",parttype=parttype) && (parttype in data.select_particle_types)
-        # the selection functionhas been calculated already
+        # the selection function has been calculated already
         return data.snap_data[("SELECTION",parttype)]
     else
         if data.select_particle_types[parttype+1] == 1
