@@ -92,3 +92,29 @@ function GadgetFilenameWithData(simulation::GadgetSimulationDir, i_snap::Int64; 
     end
 end
 
+function GadgetFilename(simulation::GadgetSimulationDirWithData, i_snap::Int64; kwargs...)
+    if isassigned(simulation.data, i_snap+1) && isa(simulation, GadgetFilename)
+        return simulation.data[i_snap+1]
+    elseif isassigned(simulation.data, i_snap+1) && hasfield(simulation.data[i_snap+1], :snap)
+        return GadgetFilename(simulation.data[i_snap+1].snap; kwargs...)
+    elseif isfile(snapshot_in_directory(simulation.dir, i_snap, 0))
+        return GadgetFilename(snapshot_in_directory(simulation.dir, i_snap); kwargs...)
+    elseif isfile(snapshot_without_directory(dir, i_snap))
+        return GadgetFilename(snapshot_without_directory(dir, i_snap); kwargs...)
+    else
+        error("Snapshot not existing")
+    end
+end
+function GadgetFilenameWithData(simulation::GadgetSimulationDirWithData, i_snap::Int64; kwargs...)
+    if isassigned(simulation.data, i_snap+1) && isa(simulation, GadgetFilenameWithData)
+        return simulation.data[i_snap+1]
+    elseif isassigned(simulation.data, i_snap+1) && hasfield(simulation.data[i_snap+1], :snap)
+        return GadgetFilenameWithData(simulation.data[i_snap+1].snap; kwargs...)
+    elseif isfile(snapshot_in_directory(simulation.dir, i_snap, 0))
+        return GadgetFilenameWithData(snapshot_in_directory(simulation.dir, i_snap); kwargs...)
+    elseif isfile(snapshot_without_directory(dir, i_snap))
+        return GadgetFilenameWithData(snapshot_without_directory(dir, i_snap); kwargs...)
+    else
+        error("Snapshot not existing")
+    end
+end
