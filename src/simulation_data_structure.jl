@@ -20,22 +20,26 @@ struct GadgetSimulationDirWithData{T<:GadgetData} <: GadgetSimulation
 end
 
 """
-    largest_snapnum(dir::String)
+    largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
 
 Return the largest snapshot number, checking snapshots directly in `dir` (snap_XXX), and in sub-directories (snapdir_XXX).
 """
-function largest_snapnum(dir::String)
+function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
     max_index = -1
 
     for entry in readdir(dir)
         # Check for file match: snap_XXX
         if occursin(r"^snap_\d+$", entry)
             idx = parse(Int64, split(entry, "_")[end])
-            max_index = max(max_index, idx)
+            if lower_end < idx < upper_end
+                max_index = max(max_index, idx)
+            end
         # Check for directory match: snapdir_XXX
         elseif occursin(r"^snapdir_\d+$", entry)
             idx = parse(Int64, split(entry, "_")[end])
-            max_index = max(max_index, idx)
+            if lower_end < idx < upper_end
+                max_index = max(max_index, idx)
+            end
         end
     end
 
