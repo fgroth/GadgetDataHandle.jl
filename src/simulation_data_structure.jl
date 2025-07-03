@@ -31,13 +31,13 @@ function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typem
         # Check for file match: snap_XXX
         if occursin(r"^snap_\d+$", entry)
             idx = parse(Int64, split(entry, "_")[end])
-            if lower_end < idx < upper_end
+            if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
             end
         # Check for directory match: snapdir_XXX
         elseif occursin(r"^snapdir_\d+$", entry)
             idx = parse(Int64, split(entry, "_")[end])
-            if lower_end < idx < upper_end
+            if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
             end
         end
