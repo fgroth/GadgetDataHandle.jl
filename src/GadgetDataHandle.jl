@@ -13,6 +13,8 @@ export get_snap_data, get_snap_data!,
 include("sub_reader.jl")
 export get_sub_data, get_sub_data!
 
+include("helper_function.jl")
+
 include("remove_data.jl")
 export has_snap_data, has_sub_data,
     remove_snap_data!, remove_sub_data!

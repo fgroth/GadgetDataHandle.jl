@@ -83,13 +83,16 @@ function read_block_with_corrections(data::GadgetData, fieldname::String; partty
     return restrict_to_selection(block_data, selection)
 end
 """
-    read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, use_keys::Bool=false)
+    read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright; parttype::Int64, Union{Bool,Nothing}=nothing)
 
 Read particles in box, but include some customized corrections such as for the velocity if blocks start with `"VEL"`, `"VRMS"`, `"VBLK"`, `"VTAN"`, `"VRAD"` and end with `"C"`.
 Also compare `read_particles_in_box` from `GadgetIO`.
 """
 function read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright;
-                                                parttype::Int64, use_keys::Bool=false)
+                                                parttype::Int64, use_keys::Union{Bool,Nothing}=nothing)
+    if isa(use_keys, nothing)
+        use_keys = has_key_files(data)
+    end
     block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
         atime = 1/(1+get_snap_header(data).z) # save for non-comoving simulations
         return read_particles_in_box(data.snap, fieldname[1:end-1], corner_lowerleft, corner_upperright, parttype=parttype, use_keys=use_keys) .* (atime^(3/2))
@@ -164,7 +167,7 @@ end
 Read snapshot data from `data.snap` with `fieldname` and `parttype`.
 """
 function get_snap_data_in_box(data::GadgetFilename, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
-    return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+    return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=has_key_files(data))
 end
 """
     get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, corner_lowerleft::Array{<:Real}, corner_upperright::Array{<:Real}; parttype::Int64=0)
@@ -175,7 +178,7 @@ function get_snap_data_in_box(data::GadgetFilenameWithData, fieldname::String, c
     if has_snap_data(data,fieldname,parttype=parttype)
         return data.snap_data[(fieldname, parttype)]
     else
-        return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+        return read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=has_key_files(data))
     end
 end
 """
@@ -213,7 +216,7 @@ function get_snap_data_in_box!(data::GadgetFilenameWithData, fieldname::String, 
     if has_snap_data(data,fieldname,parttype=parttype)
         return get_snap_data_in_box(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype)
     else
-        new_snap_data = read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=false)
+        new_snap_data = read_particles_in_box_with_corrections(data, fieldname, corner_lowerleft, corner_upperright, parttype=parttype, use_keys=has_key_files(data))
         data.snap_data[(fieldname,parttype)] = new_snap_data
         return new_snap_data
     end
