@@ -90,7 +90,7 @@ Also compare `read_particles_in_box` from `GadgetIO`.
 """
 function read_particles_in_box_with_corrections(data::GadgetData, fieldname::String, corner_lowerleft, corner_upperright;
                                                 parttype::Int64, use_keys::Union{Bool,Nothing}=nothing)
-    if isa(use_keys, nothing)
+    if isa(use_keys, Nothing)
         use_keys = has_key_files(data)
     end
     block_data = if (length(fieldname) > 3) && (fieldname[1:3] == "VEL" || fieldname[1:4] in ["VRMS","VBLK","VTAN","VRAD"]) && fieldname[end] == 'C'
