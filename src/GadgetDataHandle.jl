@@ -15,9 +15,12 @@ export get_sub_data, get_sub_data!
 
 include("helper_function.jl")
 
+include("check_data.jl")
+export hsa_snap_block, has_sub_block,
+    has_snap_data, has_sub_data
+
 include("remove_data.jl")
-export has_snap_data, has_sub_data,
-    remove_snap_data!, remove_sub_data!
+export remove_snap_data!, remove_sub_data!
 
 include("gadget_general.jl")
 
