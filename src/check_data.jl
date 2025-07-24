@@ -41,6 +41,18 @@ function has_snap_data(data::GadgetFilename, fieldname::String;
     return false
 end
 
+"""
+    groups_suffix(data)
+
+Return ".0" i group files are located in sub-directories, else return "" (empty String).
+"""
+function groups_suffix(data)
+    if (length(splitpath(data.sub)) > 1) && contains(splitpath(data.sub)[end-1],"groups")
+        groups_ending=".0"
+    else
+        groups_ending=""
+    end
+end
 
 """
     has_sub_block(data::GadgetData, fieldname::String)
@@ -51,11 +63,7 @@ function has_sub_block(data::GadgetData, fieldname::String)
     if has_sub_data(data, fieldname)
         return true
     else
-        if (length(splitpath(data.sub)) > 1) && contains(splitpath(data.sub)[end-1],"groups")
-            groups_ending=".0"
-        else
-            groups_ending=""
-        end
+        groups_ending = groups_suffix(data)
         return Bool(block_present(data.sub*groups_ending, fieldname))
     end
 end
