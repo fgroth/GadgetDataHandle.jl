@@ -48,7 +48,8 @@ end
 Return if `data` contains `fieldname`, either within `data.sub_data` or within `data.sub`.
 """
 function has_sub_block(data::GadgetData, fieldname::String)
-    if has_sub_data(data, fieldname)
+    this_fieldname = choose_subfind_fieldname(data, fieldname)
+    if has_sub_data(data, this_fieldname)
         return true
     else
         if (length(splitpath(data.sub)) > 1) && contains(splitpath(data.sub)[end-1],"groups")
@@ -56,12 +57,12 @@ function has_sub_block(data::GadgetData, fieldname::String)
         else
             groups_ending=""
         end
-        return Bool(block_present(data.sub*groups_ending, fieldname))
+        return Bool(block_present(data.sub*groups_ending, this_fieldname))
     end
 end
 function has_sub_block(data::GadgetOnlyData, fieldname::String)
     # GadgetOnlyData has no group file name. We thus cannot check within the group file, but only stored data.
-    return has_sub_data(data, fieldname)
+    return has_sub_data(data, choose_subfind_fieldname(data, fieldname))
 end
 
 """
@@ -70,7 +71,7 @@ end
 Return if `fieldname` is already part of `data.sub_data`.
 """
 function has_sub_data(data::GadgetData, fieldname::String)
-    return haskey(data.sub_data, fieldname)
+    return haskey(data.sub_data, choose_subfind_fieldname(data, fieldname))
 end
 function has_sub_data(data::GadgetFilename, fieldname::String)
     # GadgetFilename type does not contain sub_data.
