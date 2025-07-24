@@ -69,7 +69,7 @@ function has_sub_block(data::GadgetData, fieldname::String)
 end
 function has_sub_block(data::GadgetOnlyData, fieldname::String)
     # GadgetOnlyData has no group file name. We thus cannot check within the group file, but only stored data.
-    return has_sub_data(data, choose_subfind_fieldname(data, fieldname))
+    return has_sub_data(data, fieldname)
 end
 
 """
@@ -78,7 +78,7 @@ end
 Return if `fieldname` is already part of `data.sub_data`.
 """
 function has_sub_data(data::GadgetData, fieldname::String)
-    return haskey(data.sub_data, choose_subfind_fieldname(data, fieldname))
+    return haskey(data.sub_data, fieldname)
 end
 function has_sub_data(data::GadgetFilename, fieldname::String)
     # GadgetFilename type does not contain sub_data.
