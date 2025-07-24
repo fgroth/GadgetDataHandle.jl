@@ -48,8 +48,7 @@ end
 Return if `data` contains `fieldname`, either within `data.sub_data` or within `data.sub`.
 """
 function has_sub_block(data::GadgetData, fieldname::String)
-    this_fieldname = choose_subfind_fieldname(data, fieldname)
-    if has_sub_data(data, this_fieldname)
+    if has_sub_data(data, fieldname)
         return true
     else
         if (length(splitpath(data.sub)) > 1) && contains(splitpath(data.sub)[end-1],"groups")
@@ -57,7 +56,7 @@ function has_sub_block(data::GadgetData, fieldname::String)
         else
             groups_ending=""
         end
-        return Bool(block_present(data.sub*groups_ending, this_fieldname))
+        return Bool(block_present(data.sub*groups_ending, fieldname))
     end
 end
 function has_sub_block(data::GadgetOnlyData, fieldname::String)
