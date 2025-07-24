@@ -44,7 +44,7 @@ function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typem
     end
 
     if max_index == -1
-        error("dir seems to contain no snapshot")
+        error("dir="*dir*" seems to contain no snapshot")
     end
 
     return max_index
