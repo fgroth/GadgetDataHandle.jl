@@ -1,6 +1,21 @@
 using GadgetIO
 
 """
+    snap_suffix(data::GadgetData)
+
+Return ".0" i group files are located in sub-directories, else return "" (empty String).
+"""
+function snap_suffix(data::GadgetData)
+    if (length(splitpath(data.snap)) > 1) && contains(splitpath(data.snap)[end-1],"snapdir")
+        snap_ending=".0"
+    else
+        snap_ending=""
+    end
+    return snap_ending
+end
+
+
+"""
     has_snap_block(data::GadgetData, fieldname::String;
                    parttype::Int64=0)
 
@@ -11,11 +26,7 @@ function has_snap_block(data::GadgetData, fieldname::String;
     if has_snap_data(data, fieldname, parttype=parttype)
         return true
     else
-        if (length(splitpath(data.snap)) > 1) && contains(splitpath(data.snap)[end-1],"snapdir")
-            snapshot_ending=".0"
-        else
-            snapshot_ending=""
-        end
+        snapshot_ending=snap_suffix(data)
         return Bool(block_present(data.snap*snapshot_ending, fieldname) && GadgetIO.check_info(data.snap*snapshot_ending, fieldname).is_present[parttype+1])
     end
 end
@@ -42,11 +53,11 @@ function has_snap_data(data::GadgetFilename, fieldname::String;
 end
 
 """
-    groups_suffix(data)
+    groups_suffix(data::GadgetData)
 
 Return ".0" i group files are located in sub-directories, else return "" (empty String).
 """
-function groups_suffix(data)
+function groups_suffix(data::GadgetData)
     if (length(splitpath(data.sub)) > 1) && contains(splitpath(data.sub)[end-1],"groups")
         groups_ending=".0"
     else
