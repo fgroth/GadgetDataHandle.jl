@@ -9,9 +9,11 @@ include("snap_reader.jl")
 export get_snap_data, get_snap_data!,
     get_snap_data_in_box,get_snap_data_in_box!,
     get_snap_header, get_snap_header!
-include("modify_snap.jl")
 
+include("modify_snap.jl")
 export set_snap_data!
+include("modify_sub.jl")
+export set_sub_data!
 
 include("sub_reader.jl")
 export choose_subfind_fieldname,
