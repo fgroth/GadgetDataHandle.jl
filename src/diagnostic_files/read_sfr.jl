@@ -3,7 +3,7 @@ using DelimitedFiles
 """
     read_sfr_txt(filename::String="sfr.txt")
 
-Return `time` and `sfr` Vectors read from filename.
+Return all information contained in sfr.txt file as a `Dict`.
 """
 function read_sfr_txt(filename::String="sfr.txt")
 
