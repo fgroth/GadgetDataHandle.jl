@@ -36,19 +36,17 @@ function read_bh_details(directory::String="blackhole_details/")
 
     bh_data = Dict{Int, Dict{String, Any}}()
 
-    lines = 0
     for file in files
         open(file, "r") do f
             for line in eachline(f)
                 if isempty(line)
                     continue
                 end
-                lines += 1
 
                 fields = split(line,(' ',':'))
                 if fields[1] == "ENERGY"
                     # feedback energy
-                    id = parse(Int64, split(fields[3],'=')[2])
+                    id = parse(Int64, fields[3][6:end])
                     bh = get!(bh_data, id) do
                         Dict{String, Any}()
                     end
@@ -57,16 +55,16 @@ function read_bh_details(directory::String="blackhole_details/")
                          mass = Float64[],
                          mdot = Float64[],
                          dt = Float64[],
-                         id_gas = Float64[],
+                         id_gas = Int64[],
                          energy = Float64[],
                          total_energy = Float64[],
                          )
                     end
-                    push!(entry.time,         Parsers.parse(Float64, split(fields[4],'=')[2]))
-                    push!(entry.mass,         Parsers.parse(Float64, split(fields[6],'=')[2]))
-                    push!(entry.mdot,         Parsers.parse(Float64, split(fields[7],'=')[2]))
-                    push!(entry.dt,           Parsers.parse(Float64, split(fields[8],'=')[2]))
-                    push!(entry.id_gas,       Parsers.parse(Float64, split(fields[10],'=')[2]))
+                    push!(entry.time,         Parsers.parse(Float64, fields[4][6:end]))
+                    push!(entry.mass,         Parsers.parse(Float64, fields[6][5:end]))
+                    push!(entry.mdot,         Parsers.parse(Float64, fields[7][6:end]))
+                    push!(entry.dt,           Parsers.parse(Float64, fields[8][4:end]))
+                    push!(entry.id_gas,       Parsers.parse(Int64,   fields[10][7:end]))
                     push!(entry.energy,       Parsers.parse(Float64, fields[12]))
                     push!(entry.total_energy, Parsers.parse(Float64, fields[14]))
                 elseif fields[1] == "BHGROWTH"
@@ -80,9 +78,6 @@ function read_bh_details(directory::String="blackhole_details/")
                     # BH seeding, todo
                 elseif startswith(fields[1],"ThisTask")
                     #mergers, todo
-                end
-                if lines%10000 == 0
-                    println(lines)
                 end
             end
         end
