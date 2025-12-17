@@ -64,11 +64,11 @@ function read_bh_details(directory::String="blackhole_details/";
                          total_energy = Float64[],
                          )
                     end
-                    push!(entry.time,         Parsers.parse(Float64, fields[4][6:end]))
-                    push!(entry.mass,         Parsers.parse(Float64, fields[6][5:end]))
-                    push!(entry.mdot,         Parsers.parse(Float64, fields[7][6:end]))
-                    push!(entry.dt,           Parsers.parse(Float64, fields[8][4:end]))
-                    push!(entry.id_gas,       Parsers.parse(Int64,   fields[10][7:end]))
+                    push!(entry.time,         Parsers.parse(Float64, @view fields[4][6:end]))
+                    push!(entry.mass,         Parsers.parse(Float64, @view fields[6][5:end]))
+                    push!(entry.mdot,         Parsers.parse(Float64, @view fields[7][6:end]))
+                    push!(entry.dt,           Parsers.parse(Float64, @view fields[8][4:end]))
+                    push!(entry.id_gas,       Parsers.parse(Int64,   @view fields[10][7:end]))
                     push!(entry.energy,       Parsers.parse(Float64, fields[12]))
                     push!(entry.total_energy, Parsers.parse(Float64, fields[14]))
                 elseif fields[1] == "BHGROWTH"
@@ -98,29 +98,29 @@ function read_bh_details(directory::String="blackhole_details/";
                          mass_now = Float64[],
                          )
                     end
-                    push!(entry.pos,        (Parsers.parse(Float64, fields[4][2:end]),
+                    push!(entry.pos,        (Parsers.parse(Float64, @view fields[4][2:end]),
                                              Parsers.parse(Float64, fields[5]),
-                                             Parsers.parse(Float64, fields[6][1:end-1])))
-                    push!(entry.time,        Parsers.parse(Float64, fields[7][6:end]))
-                    push!(entry.mass,        Parsers.parse(Float64, fields[8][5:end]))
-                    push!(entry.rho,         Parsers.parse(Float64, fields[10][5:end]))
+                                             Parsers.parse(Float64, @view fields[6][1:end-1])))
+                    push!(entry.time,        Parsers.parse(Float64, @view fields[7][6:end]))
+                    push!(entry.mass,        Parsers.parse(Float64, @view fields[8][5:end]))
+                    push!(entry.rho,         Parsers.parse(Float64, @view fields[10][5:end]))
 
-                    push!(entry.mdot_cold,   Parsers.parse(Float64, fields[14][6:end]))
-                    push!(entry.rho_cold,    Parsers.parse(Float64, fields[15][5:end]))
-                    push!(entry.csnd_cold,   Parsers.parse(Float64, fields[16][6:end]))
-                    push!(entry.bhvel_cold,  Parsers.parse(Float64, fields[17][7:end]))
+                    push!(entry.mdot_cold,   Parsers.parse(Float64, @view fields[14][6:end]))
+                    push!(entry.rho_cold,    Parsers.parse(Float64, @view fields[15][5:end]))
+                    push!(entry.csnd_cold,   Parsers.parse(Float64, @view fields[16][6:end]))
+                    push!(entry.bhvel_cold,  Parsers.parse(Float64, @view fields[17][7:end]))
 
-                    push!(entry.mdot_hot,    Parsers.parse(Float64, fields[22][6:end]))
-                    push!(entry.rho_hot,     Parsers.parse(Float64, fields[23][5:end]))
-                    push!(entry.csnd_hot,    Parsers.parse(Float64, fields[24][6:end]))
-                    push!(entry.bhvel_hot,   Parsers.parse(Float64, fields[25][7:end]))
+                    push!(entry.mdot_hot,    Parsers.parse(Float64, @view fields[22][6:end]))
+                    push!(entry.rho_hot,     Parsers.parse(Float64, @view fields[23][5:end]))
+                    push!(entry.csnd_hot,    Parsers.parse(Float64, @view fields[24][6:end]))
+                    push!(entry.bhvel_hot,   Parsers.parse(Float64, @view fields[25][7:end]))
 
-                    push!(entry.mdot_edd,    Parsers.parse(Float64, fields[27][9:end]))
-                    push!(entry.eps_tot_feed,Parsers.parse(Float64, fields[28][12:end]))
-                    push!(entry.eps_tot,     Parsers.parse(Float64, fields[29][8:end]))
-                    push!(entry.dt,          Parsers.parse(Float64, fields[30][4:end]))
-                    push!(entry.mdot,        Parsers.parse(Float64, fields[31][6:end]))
-                    push!(entry.mass_now,    Parsers.parse(Float64, fields[32][6:end]))
+                    push!(entry.mdot_edd,    Parsers.parse(Float64, @view fields[27][9:end]))
+                    push!(entry.eps_tot_feed,Parsers.parse(Float64, @view fields[28][12:end]))
+                    push!(entry.eps_tot,     Parsers.parse(Float64, @view fields[29][8:end]))
+                    push!(entry.dt,          Parsers.parse(Float64, @view fields[30][4:end]))
+                    push!(entry.mdot,        Parsers.parse(Float64, @view fields[31][6:end]))
+                    push!(entry.mass_now,    Parsers.parse(Float64, @view fields[32][6:end]))
                 elseif fields[1] == "SWALLOW"
                     # gas particles accreted, todo
                 elseif fields[1] == "FRICTION"
