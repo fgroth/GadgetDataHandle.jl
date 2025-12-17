@@ -23,6 +23,21 @@ function read_blackholes_txt(filename::String="blackholes.txt")
     
 end
 
+struct BHEnergyData
+    # id_gas is Int64, store separately
+    id_gas::Vector{Int64}
+    # other 6 vields are packed togetheras Float64 tuple
+    data::Vector{NTuple{6, Float64}}
+end
+struct BHGrowthData
+    pos::Vector{NTuple{3, Float64}}
+    data::Vector{NTuple{17,Float64}}
+end
+
+struct BHData
+    energy::Union{Nothing, BHEnergyData}
+    growth::Union{Nothing, BHGrowthData}
+end
 
 """
     read_bh_details(directory::String="blackhole_details/";
@@ -36,7 +51,7 @@ function read_bh_details(directory::String="blackhole_details/";
     files = filter(f -> startswith(basename(f), "blackhole_details_") && endswith(f, ".txt"),
                    readdir(directory; join=true))
 
-    bh_data = Dict{Int, Dict{String, Any}}()
+    bh_data = Dict{Int, BHData}()
 
     lines = 0
     for file in files
@@ -52,75 +67,62 @@ function read_bh_details(directory::String="blackhole_details/";
                     # feedback energy
                     id = parse(Int64, fields[3][6:end])
                     bh = get!(bh_data, id) do
-                        Dict{String, Any}()
+                        BHData(nothing, nothing)
                     end
-                    entry = get!(bh, "ENERGY") do
-                        (time = Float64[],
-                         mass = Float64[],
-                         mdot = Float64[],
-                         dt = Float64[],
-                         id_gas = Int64[],
-                         energy = Float64[],
-                         total_energy = Float64[],
-                         )
+                    entry = bh.energy
+                    if entry == nothing
+                        entry = BHEnergyData(Int[64], Vector{NTuple{6, Float64}}())
+                        bh_data[id] = BHData(entry, bh.growth)
                     end
-                    push!(entry.time,         Parsers.parse(Float64, @view fields[4][6:end]))
-                    push!(entry.mass,         Parsers.parse(Float64, @view fields[6][5:end]))
-                    push!(entry.mdot,         Parsers.parse(Float64, @view fields[7][6:end]))
-                    push!(entry.dt,           Parsers.parse(Float64, @view fields[8][4:end]))
-                    push!(entry.id_gas,       Parsers.parse(Int64,   @view fields[10][7:end]))
-                    push!(entry.energy,       Parsers.parse(Float64, fields[12]))
-                    push!(entry.total_energy, Parsers.parse(Float64, fields[14]))
+                    time=         Parsers.parse(Float64, @view fields[4][6:end])
+                    mass=         Parsers.parse(Float64, @view fields[6][5:end])
+                    mdot=         Parsers.parse(Float64, @view fields[7][6:end])
+                    dt=           Parsers.parse(Float64, @view fields[8][4:end])
+                    id_gas=       Parsers.parse(Int64,   @view fields[10][7:end])
+                    energy=       Parsers.parse(Float64, fields[12])
+                    total_energy= Parsers.parse(Float64, fields[14])
+
+                    push!(entry.id_gas, id_gas)
+                    push!(entry.data, (time, mass, mdot, dt, energy, total_energy))
                 elseif fields[1] == "BHGROWTH"
                     # accretion rate computation
                     id = parse(Int64, fields[3][6:end])
                     bh = get!(bh_data, id) do
-                        Dict{String, Any}()
+                        BHData(nothing, nothing)
                     end
-                    entry = get!(bh, "BHGROWTH") do
-                        (pos = Vector{NTuple{3, Float64}}(),
-                         time = Float64[],
-                         mass = Float64[],
-                         rho = Float64[],
-                         mdot_cold = Float64[],
-                         rho_cold = Float64[],
-                         csnd_cold = Float64[],
-                         bhvel_cold = Float64[],
-                         mdot_hot = Float64[],
-                         rho_hot = Float64[],
-                         csnd_hot = Float64[],
-                         bhvel_hot = Float64[],
-                         mdot_edd = Float64[],
-                         eps_tot_feed = Float64[],
-                         eps_tot = Float64[],
-                         dt = Float64[],
-                         mdot = Float64[],
-                         mass_now = Float64[],
-                         )
+                    entry = bh.growth
+                    if entry == nothing
+                        entry = BHGrowthData(Vector{NTuple{3, Float64}}(), Vector{NTuple{17, Float64}}())
+                        bh_data[id] = BHData(bh.energy, entry)
                     end
                     push!(entry.pos,        (Parsers.parse(Float64, @view fields[4][2:end]),
                                              Parsers.parse(Float64, fields[5]),
                                              Parsers.parse(Float64, @view fields[6][1:end-1])))
-                    push!(entry.time,        Parsers.parse(Float64, @view fields[7][6:end]))
-                    push!(entry.mass,        Parsers.parse(Float64, @view fields[8][5:end]))
-                    push!(entry.rho,         Parsers.parse(Float64, @view fields[10][5:end]))
+                    time=        Parsers.parse(Float64, @view fields[7][6:end])
+                    mass=        Parsers.parse(Float64, @view fields[8][5:end])
+                    rho=         Parsers.parse(Float64, @view fields[10][5:end])
 
-                    push!(entry.mdot_cold,   Parsers.parse(Float64, @view fields[14][6:end]))
-                    push!(entry.rho_cold,    Parsers.parse(Float64, @view fields[15][5:end]))
-                    push!(entry.csnd_cold,   Parsers.parse(Float64, @view fields[16][6:end]))
-                    push!(entry.bhvel_cold,  Parsers.parse(Float64, @view fields[17][7:end]))
+                    mdot_cold=   Parsers.parse(Float64, @view fields[14][6:end])
+                    rho_cold=    Parsers.parse(Float64, @view fields[15][5:end])
+                    csnd_cold=   Parsers.parse(Float64, @view fields[16][6:end])
+                    bhvel_cold=  Parsers.parse(Float64, @view fields[17][7:end])
 
-                    push!(entry.mdot_hot,    Parsers.parse(Float64, @view fields[22][6:end]))
-                    push!(entry.rho_hot,     Parsers.parse(Float64, @view fields[23][5:end]))
-                    push!(entry.csnd_hot,    Parsers.parse(Float64, @view fields[24][6:end]))
-                    push!(entry.bhvel_hot,   Parsers.parse(Float64, @view fields[25][7:end]))
+                    mdot_hot=    Parsers.parse(Float64, @view fields[22][6:end])
+                    rho_hot=     Parsers.parse(Float64, @view fields[23][5:end])
+                    csnd_hot=    Parsers.parse(Float64, @view fields[24][6:end])
+                    bhvel_hot=   Parsers.parse(Float64, @view fields[25][7:end])
 
-                    push!(entry.mdot_edd,    Parsers.parse(Float64, @view fields[27][9:end]))
-                    push!(entry.eps_tot_feed,Parsers.parse(Float64, @view fields[28][12:end]))
-                    push!(entry.eps_tot,     Parsers.parse(Float64, @view fields[29][8:end]))
-                    push!(entry.dt,          Parsers.parse(Float64, @view fields[30][4:end]))
-                    push!(entry.mdot,        Parsers.parse(Float64, @view fields[31][6:end]))
-                    push!(entry.mass_now,    Parsers.parse(Float64, @view fields[32][6:end]))
+                    mdot_edd=    Parsers.parse(Float64, @view fields[27][9:end])
+                    eps_tot_feed=Parsers.parse(Float64, @view fields[28][12:end])
+                    eps_tot=     Parsers.parse(Float64, @view fields[29][8:end])
+                    dt=          Parsers.parse(Float64, @view fields[30][4:end])
+                    mdot=        Parsers.parse(Float64, @view fields[31][6:end])
+                    mass_now=    Parsers.parse(Float64, @view fields[32][6:end])
+
+                    push!(entry.data, (time, mass, rho,
+                                       mdot_cold, rho_cold, csnd_cold, bhvel_cold,
+                                       mdot_hot, rho_hot, csnd_hot, bhvel_hot,
+                                       mdot_edd, eps_tot_feed, eps_tot, dt, mdot, mass_now))
                 elseif fields[1] == "SWALLOW"
                     # gas particles accreted, todo
                 elseif fields[1] == "FRICTION"
