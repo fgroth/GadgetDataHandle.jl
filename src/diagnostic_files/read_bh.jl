@@ -25,23 +25,27 @@ end
 
 
 """
-    read_bh_details(directory::String="blackhole_details/")
+    read_bh_details(directory::String="blackhole_details/";
+                    output_every::Int64=typemax(Int64))
 
 Return a `Dict` containing all information from the blackhole_details files, sorted by particle ID, then by information type, then individual arrays per relevant information.
 """
-function read_bh_details(directory::String="blackhole_details/")
+function read_bh_details(directory::String="blackhole_details/";
+                         output_every::Int64=typemax(Int64))
 
     files = filter(f -> startswith(basename(f), "blackhole_details_") && endswith(f, ".txt"),
                    readdir(directory; join=true))
 
     bh_data = Dict{Int, Dict{String, Any}}()
 
+    lines = 0
     for file in files
         open(file, "r") do f
             for line in eachline(f)
                 if isempty(line)
                     continue
                 end
+                lines += 1
 
                 fields = split(line,(' ',':'))
                 if fields[1] == "ENERGY"
@@ -125,6 +129,10 @@ function read_bh_details(directory::String="blackhole_details/")
                     # BH seeding, todo
                 elseif startswith(fields[1],"ThisTask")
                     #mergers, todo
+                end
+                # todo: remove those lines
+                if lines%output_every == 0
+                    println(lines)
                 end
             end
         end
