@@ -95,3 +95,16 @@ function has_sub_data(data::GadgetFilename, fieldname::String)
     # GadgetFilename type does not contain sub_data.
     return false
 end
+
+"""
+    has_key_files(data::GadgetData)
+
+Return if key files exist for given `data.snap`
+"""
+function has_key_files(data::GadgetData)
+    # todo: also check for .key.index file?
+    return isfile(data.snap*".0.key")
+end
+function has_key_files(data::GadgetOnlyData)
+    return false
+end
