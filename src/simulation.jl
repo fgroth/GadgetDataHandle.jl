@@ -1,10 +1,14 @@
 using Formatting
 
 """
+    get_last_snapshot(simulation::GadgetSimulationDir; kwargs...)
     get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=false)
 
 Get the name of the last snapshot. 
 """
+function get_last_snapshot(simulation::GadgetSimulationDir; kwargs...)
+    return get_last_snapshot(simulation.dir ; kwargs...)
+end
 function get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=false)
     snaps = get_all_snapshots(GadgetSimulationDir(simulation_dir))
     last_snap = sort(snaps)[end]
@@ -17,21 +21,29 @@ function get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=
 end
 
 """
+    get_last_snapnumber(simulation::GadgetSimulationDir)
     get_last_snapnumber(simulation_dir::String="./")
 
 Get the number of the last snapshot.
 """
+function get_last_snapnumber(simulation::GadgetSimulationDir)
+    return get_last_snapnumber(simulation.dir)
+end
 function get_last_snapnumber(simulation_dir::String="./")
     return parse(Int64, get_last_snapshot(simulation_dir)[end-2:end])
 end
 
 """
+    get_snapshot(simulation_dir::String="./"; kwargs...)
     get_snapshot(simulation_dir::String="./"; include_directory::Bool=false,
                  i_snap::Int64=0,
                  first_snap_to_consider::Int64=0)
 
 Return snapshot with desired number `i_snap`. If this does not exist, return the last existing snapshot before instead.
 """
+function get_snapshot(simulation_dir::String="./"; kwargs...)
+    return get_snapshot(simulation.dir ; kwargs...)
+end
 function get_snapshot(simulation_dir::String="./"; include_directory::Bool=false,
                       i_snap::Int64=0,
                       first_snap_to_consider::Int64=0)
@@ -125,7 +137,7 @@ end
 Get name of next snapshot after current number.
 """
 function get_next_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
-    for next_snap in i_snap+1:0
+    for next_snap in i_snap+1:get_last_snapnumber(simulation)
         if "snap_"*sprintf1("%03d",next_snap) in all_snaps
             "snap_"*sprintf1("%03d",next_snap)
         elseif joinpath("snapdir_"*sprintf1("%03d",next_snap), "snap_"*sprintf1("%03d",next_snap)) in all_snaps
