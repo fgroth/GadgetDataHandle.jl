@@ -87,11 +87,11 @@ Return all snapshots for give `simulation`.
 """
 function get_all_snapshots(simulation::GadgetSimulationDir)
     all_files = readdir(simulation.dir)
-    snaps = all_files(issnap.(all_files))
+    snaps = all_files[issnap.(all_files)]
     # now add the file instead of the directory if snaps are inside directorires
     for i_snap in 1:length(snaps)
         if startswith(snaps[i_snap],"snapdir_")
-            snaps[i_snap] = joinpath(snaps[i_snap], "snap_"*snaps[i_snap][end-3:end])
+            snaps[i_snap] = joinpath(snaps[i_snap], "snap_"*snaps[i_snap][end-2:end])
         end
     end
     return snaps
@@ -104,11 +104,11 @@ Return all subfind outputs for given `simulation`.
 """
 function get_all_subs(simulation::GadgetSimulationDir)
     all_files = readdir(simulation.dir)
-    subs = all_files(issub.(all_files))
+    subs = all_files[issub.(all_files)]
     # now add the file instead of the directory if subs are inside directorires
     for i_sub in 1:length(sub)
         if startswith(subs[i_sub],"groups_")
-            subs[i_sub] = joinpath(subs[i_sub], "sub_"*snaps[i_sub][end-3:end])
+            subs[i_sub] = joinpath(subs[i_sub], "sub_"*snaps[i_sub][end-2:end])
         end
     end
     return subs
@@ -151,10 +151,16 @@ end
 """
     get_snapshot_closest_to_redshift(simulation::GadgetSimulationDir, redshift::Number)
 
-todo
+Return the snapshot closest to the given redshift.
 """
 function get_snapshot_closest_to_redshift(simulation::GadgetSimulationDir, redshift::Number)
-    relevant = argmin(abs.(all_redshift[i_cluster,:] .- comparison_redshift))
-    # maybe start reading at first and last, then iterate.
-    # todo!
+    all_snaps = get_all_snapshots(simulation)
+    all_redshift = Vector{Float64}(undef, length(all_snaps))
+    for i_snap in 1:length(all_snaps)
+        all_redshift[i_snap] = get_snap_header(GadgetFilename(all_snaps[i_snap])).z
+    end
+    
+    relevant = argmin(abs.(all_redshift .- redshift))
+
+    return all_snaps[relevant]
 end
