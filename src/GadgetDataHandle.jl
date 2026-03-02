@@ -35,9 +35,9 @@ include("simulation_data_structure.jl")
 export GadgetSimulation,
     GadgetSimulationDir,
     GadgetSimulationDirWithData,
-    largest_snapnum
 include("simulation.jl")
 export get_last_snapshot, get_last_snapnumber,
+    largest_snapnum,
     get_snapshot
 
 include("units.jl")

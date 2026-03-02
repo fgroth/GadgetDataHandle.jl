@@ -15,43 +15,8 @@ struct GadgetSimulationDirWithData{T<:GadgetData} <: GadgetSimulation
     data::Vector{T}
 
     function GadgetSimulationDirWithData{T}(dir::String) where {T<:GadgetData}
-        new(dir,Vector{T}(undef,largest_snapnum(dir)+1))
+        new(dir,Vector{T}(undef,get_last_snapnumber(dir)+1))
     end
-end
-
-"""
-    largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
-
-Return the largest snapshot number, checking snapshots directly in `dir` (snap_XXX), and in sub-directories (snapdir_XXX).
-"""
-function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
-    max_index = -1
-
-    for entry in readdir(dir)
-        # Check for file match: snap_XXX
-        if occursin(r"^snap_\d+$", entry)
-            idx = parse(Int64, split(entry, "_")[end])
-            if lower_end <= idx <= upper_end
-                max_index = max(max_index, idx)
-            end
-        # Check for directory match: snapdir_XXX
-        elseif occursin(r"^snapdir_\d+$", entry)
-            idx = parse(Int64, split(entry, "_")[end])
-            if lower_end <= idx <= upper_end
-                max_index = max(max_index, idx)
-            end
-        end
-    end
-
-    if max_index == -1
-        if (lower_end != 0) || (upper_end != typemax(Int64))
-            error("dir="*dir*" seems to contain no snapshot within given range ",(lower_end, upper_end))
-        else
-            error("dir="*dir*" seems to contain no snapshot")
-        end
-    end
-
-    return max_index
 end
 
 """
