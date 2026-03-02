@@ -89,9 +89,9 @@ function get_snapshot(simulation_dir::String="./"; include_directory::Bool=false
         ""
     end
     for this_i_snap in i_snap:-1:first_snap_to_consider
-        if "snap_"*sprintf1("%03d",this_i_snap) in all_files
+        if "snap_"*sprintf1("%03d",this_i_snap) in snaps
             return joinpath(dir, "snap_"*sprintf1("%03d",this_i_snap))
-        elseif "snapdir_"*sprintf1("%03d",this_i_snap) in all_files
+        elseif "snapdir_"*sprintf1("%03d",this_i_snap)*"/snap_"*sprintf1("%03d",this_i_snap) in snaps
             return joinpath(dir, "snapdir_"*sprintf1("%03d",this_i_snap), "snap_"*sprintf1("%03d",this_i_snap))
         end
     end
@@ -117,11 +117,15 @@ end
 
 """
     get_all_snapshots(simulation::GadgetSimulationDir)
+    get_all_snapshots(simulation_dir::String)
 
-Return all snapshots for give `simulation`.
+Return all snapshots for given `simulation`/`simulation_dir`.
 """
 function get_all_snapshots(simulation::GadgetSimulationDir)
-    all_files = readdir(simulation.dir)
+    get_all_snapshots(simulation.dir)
+end
+function get_all_snapshots(simulation_dir::String)
+    all_files = readdir(simulation_dir)
     snaps = all_files[issnap.(all_files)]
     # now add the file instead of the directory if snaps are inside directorires
     for i_snap in 1:length(snaps)
@@ -134,11 +138,15 @@ end
 
 """
     get_all_subs(simulation::GadgetSimulationDir)
+    get_all_subs(simulation_dir::String)
 
-Return all subfind outputs for given `simulation`.
+Return all subfind outputs for given `simulation`/`simulation_dir`.
 """
 function get_all_subs(simulation::GadgetSimulationDir)
-    all_files = readdir(simulation.dir)
+    get_all_subs(simulation.dir)
+end
+function get_all_subs(simulation_dir::String)
+    all_files = readdir(simulation_dir)
     subs = all_files[issub.(all_files)]
     # now add the file instead of the directory if subs are inside directorires
     for i_sub in 1:length(sub)
