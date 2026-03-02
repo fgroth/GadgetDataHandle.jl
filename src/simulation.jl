@@ -43,13 +43,13 @@ function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typem
 
     for entry in readdir(dir)
         # Check for file match: snap_XXX
-        if occursin(r"^snap_\d+$", entry)
+        if is_single_snap(entry)
             idx = parse(Int64, split(entry, "_")[end])
             if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
             end
         # Check for directory match: snapdir_XXX
-        elseif occursin(r"^snapdir_\d+$", entry)
+        elseif is_snapdir(entry)
             idx = parse(Int64, split(entry, "_")[end])
             if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
@@ -100,10 +100,28 @@ end
 """
     issnap(file::String)
 
-Return if a file or directory is a snapshot according to its name. 
+Return if a file or directory is a snapshot according to its name.
+
+See also [`is_single_snap`](@ref) and [`is_single_snap`](@ref).
 """
 function issnap(file::String)
-    return startswith(file,"snap_") || startswith(file,"snapdir_")
+    return is_single_snap(file) || is_snapdir(file)
+end
+"""
+    is_single_snap(file::String)
+
+Return if a file is a snapshot according to its name.
+"""
+function is_single_snap(file::String)
+    return startswith(file,"snap_")
+end
+"""
+    is_snapdir(file::String)
+
+Return if a file / directory is a snapshot directory according to its name.
+"""
+function is_snapdir(file::String)
+    return startswith(file,"snapdir_")
 end
 
 """
