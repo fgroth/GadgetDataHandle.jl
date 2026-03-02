@@ -10,8 +10,8 @@ function get_last_snapshot(simulation::GadgetSimulationDir; kwargs...)
     return get_last_snapshot(simulation.dir ; kwargs...)
 end
 function get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=false)
-    snaps = get_all_snapshots(GadgetSimulationDir(simulation_dir))
-    last_snap = sort(snaps)[end]
+    last_snap = largest_snapnaum(simulation_dir, return_name=true)
+
     dir = if include_directory
         simulation_dir
     else
@@ -34,25 +34,32 @@ function get_last_snapnumber(simulation_dir::String="./")
 end
 
 """
-    largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
+    largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64), return_name::Bool=false)
 
 Return the largest snapshot number, checking snapshots directly in `dir` (snap_XXX), and in sub-directories (snapdir_XXX).
 """
-function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64))
+function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typemax(Int64), return_name::Bool=false)
     max_index = -1
+    largest_snapname = ""
 
-    for entry in readdir(dir)
+    for snap in get_all_snapshots(dir)
         # Check for file match: snap_XXX
-        if is_single_snap(entry)
-            idx = parse(Int64, split(entry, "_")[end])
+        if is_single_snap(snap)
+            idx = parse(Int64, split(snap, "_")[end])
             if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
+                if return_name && idx==max_index
+                    largest_snapname = snap
+                end
             end
         # Check for directory match: snapdir_XXX
-        elseif is_snapdir(entry)
-            idx = parse(Int64, split(entry, "_")[end])
+        elseif is_snapdir(snap)
+            idx = parse(Int64, split(snap, "_")[end])
             if lower_end <= idx <= upper_end
                 max_index = max(max_index, idx)
+                if return_name && idx==max_index
+                    largest_snapname = snap
+                end
             end
         end
     end
@@ -65,6 +72,9 @@ function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typem
         end
     end
 
+    if return_name
+        return largest_snapname
+    end
     return max_index
 end
 
