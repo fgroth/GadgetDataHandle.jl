@@ -31,6 +31,8 @@ export remove_snap_data!, remove_sub_data!
 
 include("gadget_general.jl")
 
+include("snapshot.jl")
+
 include("simulation_data_structure.jl")
 export GadgetSimulation,
     GadgetSimulationDir,
