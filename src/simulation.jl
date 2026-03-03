@@ -1,4 +1,3 @@
-using Formatting
 
 """
     get_last_snapshot(simulation::GadgetSimulationDir; kwargs...)
@@ -99,10 +98,10 @@ function get_snapshot(simulation_dir::String="./"; include_directory::Bool=false
         ""
     end
     for this_i_snap in i_snap:-1:first_snap_to_consider
-        if "snap_"*sprintf1("%03d",this_i_snap) in snaps
-            return joinpath(dir, "snap_"*sprintf1("%03d",this_i_snap))
-        elseif "snapdir_"*sprintf1("%03d",this_i_snap)*"/snap_"*sprintf1("%03d",this_i_snap) in snaps
-            return joinpath(dir, "snapdir_"*sprintf1("%03d",this_i_snap), "snap_"*sprintf1("%03d",this_i_snap))
+        if single_snapshot(this_i_snap) in snaps
+            return joinpath(dir, single_snapshot(this_i_snap))
+        elseif snap_in_snapdir(this_i_snap) in snaps
+            return joinpath(dir, snap_in_snapdir(this_i_snap))
         end
     end
 end
@@ -193,10 +192,10 @@ Get name of previous snapshot before current number.
 function get_previous_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
     all_snaps = get_all_snapshots(simulation)
     for previous_snap in i_snap-1:-1:0
-        if "snap_"*sprintf1("%03d",previous_snap) in all_snaps
-            "snap_"*sprintf1("%03d",previous_snap)
-        elseif joinpath("snapdir_"*sprintf1("%03d",previous_snap), "snap_"*sprintf1("%03d",previous_snap)) in all_snaps
-            joinpath("snapdir_"*sprintf1("%03d",previous_snap), "snap_"*sprintf1("%03d",previous_snap))
+        if single_snapshot(previous_snap) in all_snaps
+            single_snapshot(previous_snap)
+        elseif snap_in_snapdir(previous_snap) in all_snaps
+            snap_in_snapdir(previous_snap)
         end
     end
     # if we reach this point, there is no further snapshot in simulation
@@ -209,10 +208,10 @@ Get name of next snapshot after current number.
 """
 function get_next_snapshot(i_snap::Int64, simulation::GadgetSimulationDir)
     for next_snap in i_snap+1:get_last_snapnumber(simulation)
-        if "snap_"*sprintf1("%03d",next_snap) in all_snaps
-            "snap_"*sprintf1("%03d",next_snap)
-        elseif joinpath("snapdir_"*sprintf1("%03d",next_snap), "snap_"*sprintf1("%03d",next_snap)) in all_snaps
-            joinpath("snapdir_"*sprintf1("%03d",next_snap), "snap_"*sprintf1("%03d",next_snap))
+        if single_snapshot(next_snap) in all_snaps
+            single_snapshot(next_snap)
+        elseif snap_in_snapdir(next_snap) in all_snaps
+            snap_in_snapdir(next_snap)
         end
 
     end
