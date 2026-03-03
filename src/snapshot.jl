@@ -26,3 +26,21 @@ Return the name of a snapshot in a snapdir. See [`snapdir`](@ref) and [`single_s
 function snap_in_snapdir(snapnum::Int64)
     return joinpath(snapdir(snapnum), single_snapshot(snapnum))
 end
+
+"""
+    get_number_of_sub_snaps(dir::String, snapnum::Int64)
+
+Return the number of sub-snapshots.
+"""
+function get_number_of_sub_snaps(dir::String, snapnum::Int64)
+    this_snapdir = joinpath(dir, snapdir(snapnum))
+    if isdir(this_snapdir)
+        all_subsnaps = readdir(this_snapdir)
+        return sum(is_single_snap.(all_subsnaps))
+    elseif isfile(joinpath(dir, single_snapshot(snapnum)))
+        return 1
+    end
+    
+    # no snapshot has been found
+    return 0
+end

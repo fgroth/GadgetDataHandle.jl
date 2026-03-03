@@ -32,6 +32,7 @@ export remove_snap_data!, remove_sub_data!
 include("gadget_general.jl")
 
 include("snapshot.jl")
+export get_number_of_sub_snaps
 
 include("simulation_data_structure.jl")
 export GadgetSimulation,
