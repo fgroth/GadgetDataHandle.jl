@@ -78,16 +78,12 @@ function largest_snapnum(dir::String; lower_end::Int64=0, upper_end::Int64=typem
 end
 
 """
-    get_snapshot(simulation_dir::String="./"; kwargs...)
     get_snapshot(simulation_dir::String="./"; include_directory::Bool=false,
                  i_snap::Int64=0,
                  first_snap_to_consider::Int64=0)
 
 Return snapshot with desired number `i_snap`. If this does not exist, return the last existing snapshot before instead.
 """
-function get_snapshot(simulation_dir::String="./"; kwargs...)
-    return get_snapshot(simulation.dir ; kwargs...)
-end
 function get_snapshot(simulation_dir::String="./"; include_directory::Bool=false,
                       i_snap::Int64=0,
                       first_snap_to_consider::Int64=0)
