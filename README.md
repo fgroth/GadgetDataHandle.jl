@@ -92,3 +92,16 @@ This package defines two datatypes (structs) that contain relevant conversions b
 `GadgetUnits` contains conversion factors from code units to cgs.
 
 `HubbleFactors` contains conversion factors from units including the Hubble parameter (e.g. kpc/h) to units without such a factor (e.g. kpc).
+
+
+## Diagnostic files
+
+Gadget outputs several diagnostic files with useful information in plain text format. They can be read with the following functions:
+
+`read_cpu_file` extracts timer information from the CPU file, stored in a Vector (entry per timestep) of Dict (storing all timer information).
+`cpu_value_evolution` can extract timer information from the `Vector{Dict}` for a specific key into `Vector{Float64}` format for better analysis.
+
+`read_sfr.txt` returns the content of the sfr.txt file into Dict of Vectors with the five columns stored as individual keys.
+
+`read_blackholes_txt` returns the content of blackholes.txt into a Dict of Vectors with the columns stored as individual keys.
+`read_bh_details` returns the per-blackhole information stored in blackhole_details/blackhole_details_*.txt. At the moment, only `"ENERGY"` and `"BHGROWTH"` type lines are read, others are omitted.
