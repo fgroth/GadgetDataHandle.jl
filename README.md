@@ -69,3 +69,8 @@ The same can be done for subfind data with `has_sub_data`, `has_sub_block`.
 New data can be added to the `snap_data` Dict using `set_snap_data`.
 
 In the same way, new data can be added to the `sub_data` Dict using `set_sub_data`.
+
+
+### Removing data
+
+To cleanup the `snap_data`/`sub_data` dictionaries, data can eb deleted using `remove_snap_data!`/`remove_sub_data!`. They return `true` if data has indeed been deleted, and `false` otherwise (e.g. no `snap_data`/`sub_data` Dict present at all or data not present).
