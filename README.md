@@ -4,6 +4,7 @@
 
 The main purpose of this package is to introduce wrapper functions for [GadgetIO](https://github.com/LudwigBoess/GadgetIO.jl)
 
+
 ### Data types
 
 This package introduces several datatypes of AbstractType `GadgetData`.
@@ -30,6 +31,7 @@ In particular, the types introduced contain the following content:
 Types take the snapshot name, and optionally the subfind name as positional arguments for construction. `selection_function` and `select_particle_types` are passed as keyword arguments.
 Data can be added in a next step (see sections on reading).
 
+
 ### Readig snapshot / subfind data
 
 #### Snapshots
@@ -53,6 +55,14 @@ Read subfind data with `get_sub_data`. Internally, this function uses `GadgetIO.
 This function automatically checks for alternative naming conventions in subfind (e.g. `"R200"` vs `"RMEA"`, `"MTOP"` vs `"MVIR"`, etc).
 
 If the information should be stored in the `sub_data` Dict, use the modifying reading function `get_sub_data!`.
+
+
+### Checking data
+
+To check for data in the `snap_data` Dict use `has_snap_data`. To check if data is available either in the `snap_data`, or directly in the snapshot, use `has_snap_block`.
+
+The same can be done for subfind data with `has_sub_data`, `has_sub_block`.
+
 
 ### Adding additional data
 
