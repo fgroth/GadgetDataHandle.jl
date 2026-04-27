@@ -1,8 +1,9 @@
 """
     GadgetUnits
 
-Type (struct) to hold information on unit system taht was used for simulation.
-Unitialized using `UnitLength_in_cm`, `UnitVelocity_in_cm_per_s`, `UnitMass_in_g`, `UnitMagneticField_in_gauss`. Other factors are calculated from these.
+Type (struct) to hold information on unit system that was used for simulation.
+
+Initialized using `UnitLength_in_cm`, `UnitVelocity_in_cm_per_s`, `UnitMass_in_g`, `UnitMagneticField_in_gauss`. Other factors are calculated from these.
 """
 struct GadgetUnits
     # input
@@ -37,6 +38,13 @@ struct GadgetUnits
     end
 end
 
+"""
+    HubbleFactors
+
+Type (struct) to hold Hubble conversion factors to convert code units to physical units.
+
+Initialized using `HubbleParam`, calculating unit conversion factors.
+"""
 struct HubbleFactors
     HubbleParam::Number
     # derived quantities

@@ -83,3 +83,12 @@ To check the way how snapshot/subfind data is stored, this package introduces so
 `has_key_files` checks if key files are present for more efficient reading. This function is used to detect automatically if keyfiles can be used in the reading functions.
 
 `get_number_of_snaps` returns the number of sub snapshot files. Returns 1 if the snapshot is stored in a single file.
+
+
+## Units
+
+This package defines two datatypes (structs) that contain relevant conversions between internal code units and physical units.
+
+`GadgetUnits` contains conversion factors from code units to cgs.
+
+`HubbleFactors` contains conversion factors from units including the Hubble parameter (e.g. kpc/h) to units without such a factor (e.g. kpc).
