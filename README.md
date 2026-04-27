@@ -28,8 +28,7 @@ In particular, the types introduced contain the following content:
 | GadgetFilenameWithData  | yes           | yes                     | yes                                           |
 | GadgetOnlyData          | no            | yes                     | yes                                           |
 
-Types take the snapshot name, and optionally the subfind name as positional arguments for construction. `selection_function` and `select_particle_types` are passed as keyword arguments.
-Data can be added in a next step (see sections on reading).
+Types take the snapshot name, and optionally the subfind name as positional arguments for construction (if not provided, the subfind name is inferred from the snapshot name). `selection_function` and `select_particle_types` are passed as keyword arguments.
 
 
 ### Readig snapshot / subfind data
