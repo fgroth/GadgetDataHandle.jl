@@ -49,3 +49,9 @@ Read subfind data with `get_sub_data`. Internally, this function uses `GadgetIO.
 This function automatically checks for alternative naming conventions in subfind (e.g. `"R200"` vs `"RMEA"`, `"MTOP"` vs `"MVIR"`, etc).
 
 If the information should be stored in the `sub_data` Dict, use the modifying reading function `get_sub_data!`.
+
+### Adding additional data
+
+New data can be added to the `snap_data` Dict using `set_snap_data`.
+
+In the same way, new data can be added to the `sub_data` Dict using `set_sub_data`.
