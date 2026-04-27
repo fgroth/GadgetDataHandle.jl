@@ -108,11 +108,15 @@ Gadget outputs several diagnostic files with useful information in plain text fo
 
 ## Simulations
 
+This part of the package is still preliminary and needs further work to be fully functional.
+
+
 ### Data types
 
 To deal with simulations with several snapshots more easily, this package introduces several datatypes to hold information of the whole simulation, similarly to the snapshot types:
 
 `GadgetSimulation`, `GadgetSimulationDir`, `GadgetSimulationDirWithData`.
+
 
 ### Getting snapshots
 
