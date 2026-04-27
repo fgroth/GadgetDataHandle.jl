@@ -29,7 +29,9 @@ export remove_snap_data!, remove_sub_data!
 include("helper_function.jl")
 export has_key_files
 include("snapshot.jl")
-export get_number_of_sub_snaps
+export get_number_of_sub_snaps,
+    get_simulation_path,
+    get_snapshot_number_from_name
 
 
 include("units.jl")
@@ -51,8 +53,7 @@ export GadgetSimulation,
     GadgetSimulationDirWithData
 
 include("simulation.jl")
-export get_simulation_path,
-    get_last_snapshot, get_last_snapnumber,
+export get_last_snapshot, get_last_snapnumber,
     largest_snapnum,
     get_snapshot
 

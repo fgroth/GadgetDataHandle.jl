@@ -1,20 +1,5 @@
 
 """
-    get_simulation_path(snapname::String)
-
-Return the simulation path for standard snapshot naming conventions.
-"""
-function get_simulation_path(snapname::String)
-    # identify the snap name/directory
-    m = match(r"^(.*?)(?:/snapdir_\d{3})?/snap_\d{3}$", snapname)
-    if isnothing(m)
-        error("Snapname does not follow standard snapshot directory conventions")
-    end
-    # return the main simulation directory
-    return m.captures[1]
-end
-
-"""
     get_last_snapshot(simulation::GadgetSimulationDir; kwargs...)
     get_last_snapshot(simulation_dir::String="./"; include_directory::Bool=false)
 

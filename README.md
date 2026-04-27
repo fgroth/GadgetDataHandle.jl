@@ -83,6 +83,8 @@ To check the way how snapshot/subfind data is stored, this package introduces so
 
 `get_number_of_snaps` returns the number of sub snapshot files. Returns 1 if the snapshot is stored in a single file.
 
+From a snapshot, the simulation directory can be inferred using `get_simulation_path`. The snapshot number can be inferred using `get_snapshot_number_from_name`.
+
 
 ## Units
 
@@ -124,5 +126,3 @@ The last snapshot of the simulation can be obtained using `get_last_snapshot`/`g
 The largest snapshot within a specified limit can be obtained using `largest_snapnum`.
 
 A specific snapshot with desired `i_snap` can be returned using `get_snapshot`.
-
-From a snapshot, the simulation directory can be inferred using `get_simulation_path`.
