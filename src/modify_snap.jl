@@ -19,6 +19,6 @@ Return `data` and do nothing.
 """
 function set_snap_data!(data::GadgetFilename, fieldname::String;
                         parttype::Int64=0, new_data::Union{VecOrMat{<:Real}})
-    # no snap_data entry is present, we can this not edit it
+    # no snap_data entry is present, we can thus not edit it
     return data
 end
