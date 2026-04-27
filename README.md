@@ -74,3 +74,12 @@ In the same way, new data can be added to the `sub_data` Dict using `set_sub_dat
 ### Removing data
 
 To cleanup the `snap_data`/`sub_data` dictionaries, data can eb deleted using `remove_snap_data!`/`remove_sub_data!`. They return `true` if data has indeed been deleted, and `false` otherwise (e.g. no `snap_data`/`sub_data` Dict present at all or data not present).
+
+
+### Helper functions
+
+To check the way how snapshot/subfind data is stored, this package introduces some helper functions:
+
+`has_key_files` checks if key files are present for more efficient reading. This function is used to detect automatically if keyfiles can be used in the reading functions.
+
+`get_number_of_snaps` returns the number of sub snapshot files. Returns 1 if the snapshot is stored in a single file.
