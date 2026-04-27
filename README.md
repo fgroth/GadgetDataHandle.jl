@@ -30,3 +30,22 @@ In particular, the types introduced contain the following content:
 Types take the snapshot name, and optionally the subfind name as positional arguments for construction. `selection_function` and `select_particle_types` are passed as keyword arguments.
 Data can be added in a next step (see sections on reading).
 
+### Readig snapshot / subfind data
+
+#### Snapshots
+
+Read data with `get_snap_data`. Internally, this function uses `GadgetIO.read_block`.
+
+Velocities can be corrected to internal code units from the output code units in the snapshot (multiplying with `atime^(3/2)`) by adding a "C" at the end of the fieldname (e.g. `"VELC"`, `"VRMSC"`).
+
+The data is then limited to the selction. To this end, the selection function is evaluated if necessary, results can be reused by saving a field `("SELECTION",parttype)` to the `snap_data` for types that contain this field. The data is then returned as `Array`. 
+
+If the information should be stored in the `snap_data` Dict, use the modifying reading function `get_snap_data!`.
+
+#### Subfind
+
+Read subfind data with `get_sub_data`. Internally, this function uses `GadgetIO.read_subfind`.
+
+This function automatically checks for alternative naming conventions in subfind (e.g. `"R200"` vs `"RMEA"`, `"MTOP"` vs `"MVIR"`, etc).
+
+If the information should be stored in the `sub_data` Dict, use the modifying reading function `get_sub_data!`.
