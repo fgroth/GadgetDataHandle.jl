@@ -124,3 +124,5 @@ The last snapshot of the simulation can be obtained using `get_last_snapshot`/`g
 The largest snapshot within a specified limit can be obtained using `largest_snapnum`.
 
 A specific snapshot with desired `i_snap` can be returned using `get_snapshot`.
+
+From a snapshot, the simulation directory can be inferred using `get_simulation_path`.

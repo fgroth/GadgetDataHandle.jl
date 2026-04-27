@@ -51,7 +51,8 @@ export GadgetSimulation,
     GadgetSimulationDirWithData
 
 include("simulation.jl")
-export get_last_snapshot, get_last_snapnumber,
+export get_simulation_path,
+    get_last_snapshot, get_last_snapnumber,
     largest_snapnum,
     get_snapshot
 
