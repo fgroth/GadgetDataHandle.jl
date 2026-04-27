@@ -105,3 +105,19 @@ Gadget outputs several diagnostic files with useful information in plain text fo
 
 `read_blackholes_txt` returns the content of blackholes.txt into a Dict of Vectors with the columns stored as individual keys.
 `read_bh_details` returns the per-blackhole information stored in blackhole_details/blackhole_details_*.txt. At the moment, only `"ENERGY"` and `"BHGROWTH"` type lines are read, others are omitted.
+
+
+## Simulations
+
+### Data types
+
+To deal with simulations with several snapshots more easily, this package introduces several datatypes to hold information of the whole simulation, similarly to the snapshot types:
+
+`GadgetSimulation`, `GadgetSimulationDir`, `GadgetSimulationDirWithData`.
+
+### Getting snapshots
+
+The last snapshot of the simulation can be obtained using `get_last_snapshot`/`get_last_snapnumber`.
+The largest snapshot within a specified limit can be obtained using `largest_snapnum`.
+
+A specific snapshot with desired `i_snap` can be returned using `get_snapshot`.
