@@ -40,7 +40,11 @@ Velocities can be corrected to internal code units from the output code units in
 
 The data is then limited to the selction. To this end, the selection function is evaluated if necessary, results can be reused by saving a field `("SELECTION",parttype)` to the `snap_data` for types that contain this field. The data is then returned as `Array`. 
 
-If the information should be stored in the `snap_data` Dict, use the modifying reading function `get_snap_data!`.
+For reading particles in a box, use `get_snap_data_in_box`, internally based on `GadgetIO.read_particles_in_box`.
+
+If the information should be stored in the `snap_data` Dict, use the modifying reading function `get_snap_data!`/`get_snap_data_in_box!`.
+
+The header can be obtained using `get_snap_header`/`get_snap_header!` based on `GadgetIO.read_header`.
 
 #### Subfind
 
