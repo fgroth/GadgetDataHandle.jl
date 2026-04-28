@@ -115,9 +115,9 @@ This part of the package is still preliminary and needs further work to be fully
 
 ### Data types
 
-To deal with simulations with several snapshots more easily, this package introduces several datatypes to hold information of the whole simulation, similarly to the snapshot types:
+To deal with simulations with several snapshots more easily, this package introduces several datatypes of AbstractType `GadgetSimulation` to hold information of the whole simulation, similarly to the snapshot types:
 
-`GadgetSimulation`, `GadgetSimulationDir`, `GadgetSimulationDirWithData`.
+`GadgetSimulationDir`, `GadgetSimulationDirWithData`.
 
 
 ### Getting snapshots
