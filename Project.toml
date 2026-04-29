@@ -1,7 +1,7 @@
 name = "GadgetDataHandle"
 uuid = "0669c0a9-e839-4752-9cc8-3f8df3b08347"
 authors = ["Frederick Groth <fgroth@usm.lmu.de>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
