@@ -32,7 +32,8 @@ include("snapshot.jl")
 export get_number_of_sub_snaps,
     get_simulation_path,
     get_snapshot_number_from_name
-
+include("estimate_pmgrid.jl")
+export estimate_highres_pmgrid
 
 include("units.jl")
 export GadgetUnits, HubbleFactors
