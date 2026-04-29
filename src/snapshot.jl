@@ -29,6 +29,7 @@ end
 
 """
     get_number_of_sub_snaps(dir::String, snapnum::Int64)
+    get_number_of_sub_snaps(data::GadgetData)
 
 Return the number of sub-snapshots.
 """
@@ -43,6 +44,9 @@ function get_number_of_sub_snaps(dir::String, snapnum::Int64)
     
     # no snapshot has been found
     return 0
+end
+function get_number_of_sub_snaps(data::GadgetData)
+    get_number_of_sub_snaps(get_simulation_path(data.snap), get_snapshot_number_from_name(data.snap))
 end
 
 """
