@@ -61,7 +61,7 @@ function get_simulation_path(snapname::String)
         error("Snapname does not follow standard snapshot directory conventions")
     end
     # return the main simulation directory
-    return m.captures[1]
+    return String(m.captures[1])
 end
 
 """
