@@ -85,6 +85,8 @@ To check the way how snapshot/subfind data is stored, this package introduces so
 
 From a snapshot, the simulation directory can be inferred using `get_simulation_path`. The snapshot number can be inferred using `get_snapshot_number_from_name`.
 
+For setting up simulations, `estimate_highres_pmgrid` can help to get a good estimate on the HIGHRES_PMGRID Config switch.
+
 
 ## Units
 
