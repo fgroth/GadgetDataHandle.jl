@@ -4,6 +4,7 @@ include("gadget_general.jl")
 include("gadget_data_structure.jl")
 export GadgetData, GadgetFilename,
     GadgetFilenameWithData, GadgetOnlyData,
+    GadgetWithData, GadgetWithFilename
     default_selection_function
 
 include("snap_reader.jl")

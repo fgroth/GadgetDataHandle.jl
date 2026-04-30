@@ -105,3 +105,7 @@ mutable struct GadgetOnlyData <: GadgetData
             selection_function, get_select_particle_types(select_particle_types))
     end
 end
+
+# define composite types that are useful for checking of specific fields are present
+GadgetWithData = Union{GadgetOnlyData, GadgetFilenameWithData}
+GadgetWithFilename = Union{GadgetFilename, GadgetFilenameWithData}
